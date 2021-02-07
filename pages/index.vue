@@ -22,12 +22,16 @@
         >
           GitHub
         </a>
+        <v-btn block>
+          Block Button
+        </v-btn>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+
 export default {}
 </script>
 
