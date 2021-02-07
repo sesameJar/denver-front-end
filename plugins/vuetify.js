@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import Vuetify, { VBtn } from 'vuetify/lib'
+import Vuetify, { VBtn, VCol, VRow, VContainer, VTextField, VTextarea, VDatePicker } from 'vuetify/lib'
 
 Vue.use(Vuetify, {
-  components: { VBtn }
+  components: { VBtn, VCol, VRow, VContainer, VTextField, VTextarea, VDatePicker }
 })
 
 const opts = {}
