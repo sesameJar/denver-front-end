@@ -1,10 +1,18 @@
 <template>
   <div>
     <div class="ChallengeCreation-upload-video">
-      <div class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
+      <div v-if="!videoUploaded" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
         <div style="justify-content:center">
-          <img class="ChallengeCreation-dotted-camera-circle" src="https://cdn.iconscout.com/icon/free/png-256/video-842-475041.png" height="50px" width="50px">
+          <v-file-input
+            v-model="video"
+            accept="image/*"
+            placeholder="Select A Video"
+            prepend-icon="mdi-video"
+          />
         </div>
+      </div>
+      <div>
+        <video src="video.name" alt="video" />
       </div>
     </div>
     <v-container class="ChallengeCreation-upload-video">
@@ -27,7 +35,6 @@
             class="ChallengeCreation-space-between-row-items"
             name="challenge-description"
             label="Video Description"
-            value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."
           />
         </v-row>
         <v-row style="justify-content:center">
@@ -56,7 +63,13 @@ export default {
       date: {
         time: 0,
         day: ''
-      }
+      },
+      video: null
+    }
+  },
+  methods: {
+    wazy () {
+      console.log(this.video)
     }
   }
 }
