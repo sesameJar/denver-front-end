@@ -4,16 +4,21 @@
       <div v-if="!videoUploaded" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
         <div style="justify-content:center">
           <v-file-input
-            v-model="video"
-            accept="image/*"
+            v-model="videoUpload"
+            accept="video/*"
             placeholder="Select A Video"
             prepend-icon="mdi-video"
           />
         </div>
       </div>
-      <div>
-        <video src="video.name" alt="video" />
-      </div>
+      <video
+        autoplay
+        controls
+        name="media"
+      ><source
+        :src="video"
+        :type="'video/mp4'"
+      ></video>
     </div>
     <v-container class="ChallengeCreation-upload-video">
       <v-col>
@@ -54,22 +59,24 @@
 import Datepicker from 'vuejs-datepicker'
 
 export default {
+  name: 'ChallengeCreation',
   components: {
     Datepicker
   },
   data () {
     return {
-      videoUploaded: false,
       date: {
         time: 0,
         day: ''
       },
+      videoUploaded: false,
+      videoUpload: null,
       video: null
     }
   },
-  methods: {
-    wazy () {
-      console.log(this.video)
+  watch: {
+    videoUpload () {
+      this.video = URL.createObjectURL(this.videoUpload)
     }
   }
 }
