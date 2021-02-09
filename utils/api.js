@@ -2,7 +2,7 @@ import Ceramic from '@ceramicnetwork/http-client'
 import { IDX } from '@ceramicstudio/idx'
 import { ThreeIdConnect, EthereumAuthProvider } from '3id-connect'
 
-export { getUserProfile, creatUserProfile, addLike, getAuthenticatedAPI}
+export { getUserProfile, creatUserProfile, addLike, removeLike, getAuthenticatedAPI }
 
 /**
  * Get api connection
@@ -12,7 +12,7 @@ export { getUserProfile, creatUserProfile, addLike, getAuthenticatedAPI}
 function getAPI () {
   const ceramic = new Ceramic('https://ceramic-clay.3boxlabs.com')
   const aliases = {
-    basicProfile: 'kjzl6cwe1jw14blngzz896wlixmclprl7nxkpj9s1fgiph2quok8894q7f5mkk0',
+    basicProfile: 'kjzl6cwe1jw14blngzz896wlixmclprl7nxkpj9s1fgiph2quok8894q7f5mkk0'
   }
   const idx = new IDX({ ceramic, aliases })
   return idx
@@ -26,16 +26,15 @@ async function getAuthenticatedAPI () {
   // using the community Ceramic dev node
   const ceramic = new Ceramic('https://ceramic-clay.3boxlabs.com')
   const addresses = await window.ethereum.enable()
+  const threeIdConnect = new ThreeIdConnect()
   // setting up an authenticated connection using an Ethereum provider
   const authProvider = new EthereumAuthProvider(window.ethereum, addresses[0])
-  await ThreeIdConnect.connect(authProvider)
-  const provider = await ThreeIdConnect.getDidProvider()
+  await threeIdConnect.connect(authProvider)
+  const provider = await threeIdConnect.getDidProvider()
+  // use default alias for the defintionIDs
   await ceramic.setDIDProvider(provider)
-  // set alias for the defintionIDs used by our app
-  const aliases = {
-    basicProfile: 'kjzl6cwe1jw14blngzz896wlixmclprl7nxkpj9s1fgiph2quok8894q7f5mkk',
-  }
-  const idx = new IDX({ ceramic, aliases })
+  const idx = new IDX({ ceramic })
+  console.log('idx', idx)
   return idx
 }
 
@@ -45,7 +44,7 @@ async function getAuthenticatedAPI () {
  * @returns user profile
  */
 async function getUserProfile (ethAddress) {
-  const api = getAPI()
+  const api = await getAPI()
   const user = await api.get('basicProfile')
   return user
 }
@@ -57,7 +56,7 @@ async function getUserProfile (ethAddress) {
  * @returns user profile
  */
 async function creatUserProfile (profile) {
-  const api = getAPI()
+  const api = await getAuthenticatedAPI()
   const user = await api.set('basicProfile', profile)
   return user
 }
@@ -69,12 +68,49 @@ async function creatUserProfile (profile) {
  * @returns true if added; false if already existed
  */
 async function addLike (challengeId) {
-  const api = getAPI()
+  const api = await getAuthenticatedAPI()
   const user = await api.get('basicProfile')
-  if (user.like.includes(challengeId)) {
+  console.log('User likes before:', user)
+  // iniitialize as array of one element if the "starRelayLikes" key is not present
+  const isKeyUndefined = !user?.starRelayLikes
+  const isValueNotArray = !user?.starRelayLikes?.length
+  if (isKeyUndefined || isValueNotArray) {
+    await api.merge('basicProfile', { starRelayLikes: [Number(challengeId)] })
+    return true
+  }
+  const likes = await user.starRelayLikes
+  if (likes.includes(Number(challengeId))) {
     return false
   }
-  const like = user.like.push(challengeId)
-  await user.merge('basicProfile', { like })
-  return user
+  likes.push(Number(challengeId))
+  await api.merge('basicProfile', { starRelayLikes: likes })
+  console.log('User likes after:', user)
+  return true
+}
+
+/**
+ * Remove challenge from list of likes
+ * @function addLike
+ * @param {number} challengeId - challenge id the user liked
+ * @returns true if removed; false unchanged
+ */
+async function removeLike (challengeId) {
+  const api = await getAuthenticatedAPI()
+  const user = await api.get('basicProfile')
+  console.log('User likes before:', user)
+  // iniitialize as array of one element if the "starRelayLikes" key is not present
+  const isKeyUndefined = !user?.starRelayLikes
+  const isValueNotArray = !user?.starRelayLikes?.length
+  if (isKeyUndefined || isValueNotArray) {
+    await api.merge('basicProfile', { starRelayLikes: [] })
+    return false
+  }
+  const likes = await user.starRelayLikes
+  if (!likes.includes(Number(challengeId))) {
+    return false
+  }
+  likes.pop(Number(challengeId))
+  await api.merge('basicProfile', { starRelayLikes: likes })
+  console.log('User likes after:', user)
+  return true
 }
