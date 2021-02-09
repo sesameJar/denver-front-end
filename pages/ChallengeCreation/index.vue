@@ -11,14 +11,10 @@
           />
         </div>
       </div>
-      <video
-        autoplay
-        controls
-        name="media"
-      ><source
-        :src="video"
-        :type="'video/mp4'"
-      ></video>
+      <VideoPlayer
+        :key="video"
+        :video-data="video"
+      />
     </div>
     <v-container class="ChallengeCreation-upload-video">
       <v-col>
@@ -57,11 +53,12 @@
 
 <script>
 import Datepicker from 'vuejs-datepicker'
-
+import VideoPlayer from '@/components/VideoPlayer'
 export default {
   name: 'ChallengeCreation',
   components: {
-    Datepicker
+    Datepicker,
+    VideoPlayer
   },
   data () {
     return {
