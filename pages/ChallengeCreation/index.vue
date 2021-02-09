@@ -1,20 +1,23 @@
 <template>
   <div>
     <div class="ChallengeCreation-upload-video">
-      <div v-if="!videoUploaded" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
+      <div v-if="!isUploadedVideo" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
         <div style="justify-content:center">
           <v-file-input
-            v-model="videoUpload"
+            v-model="videoFile"
             accept="video/*"
             placeholder="Select A Video"
             prepend-icon="mdi-video"
           />
         </div>
       </div>
-      <VideoPlayer
-        :key="video"
-        :video-data="video"
-      />
+      <div v-else style="margin-top:5%">
+        <VideoPlayer
+          :key="video"
+          style="max-height:450px"
+          :video-data="video"
+        />
+      </div>
     </div>
     <v-container class="ChallengeCreation-upload-video">
       <v-col>
@@ -66,14 +69,15 @@ export default {
         time: 0,
         day: ''
       },
-      videoUploaded: false,
-      videoUpload: null,
+      isUploadedVideo: false,
+      videoFile: null,
       video: null
     }
   },
   watch: {
-    videoUpload () {
-      this.video = URL.createObjectURL(this.videoUpload)
+    videoFile () {
+      this.video = URL.createObjectURL(this.videoFile)
+      this.isUploadedVideo = true
     }
   }
 }
