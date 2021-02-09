@@ -8,7 +8,7 @@
     <div class="Home__browse">
       <v-row>
         <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
+          <ChallengeCard />
         </v-col>
         <v-col cols="12" md="4">
           <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
@@ -34,14 +34,17 @@
         <v-col cols="12" md="4">
           <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
         </v-col>
+        </challengecard>
       </v-row>
     </div>
   </div>
 </template>
 
 <script>
-
-export default {}
+import ChallengeCard from '@/components/ChallengeCard'
+export default {
+  components: { ChallengeCard }
+}
 </script>
 
 <style>

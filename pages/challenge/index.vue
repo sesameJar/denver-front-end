@@ -16,8 +16,11 @@
       </div>
 
       <div class="Challenge__stats">
-        <p>total funds</p>
-        <p># challenges</p>
+        <span>total funds</span>
+        <span># challenges</span>
+        <br>
+        <span>Time Left</span>
+        <br>
         <v-btn
           class="ma-2"
           outlined
