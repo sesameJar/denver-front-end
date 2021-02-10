@@ -57,6 +57,7 @@
 <script>
 import Datepicker from 'vuejs-datepicker'
 import VideoPlayer from '@/components/VideoPlayer'
+import ipfsClient from 'ipfs-http-client'
 export default {
   name: 'ChallengeCreation',
   components: {
