@@ -33,6 +33,7 @@
             Description:
           </h3>
           <v-textarea
+            v-model="challengeDescription"
             class="ChallengeCreation-space-between-row-items"
             name="challenge-description"
             label="Video Description"
@@ -44,7 +45,7 @@
         <br>
         <br>
         <v-row style="justify-content:center">
-          <Datepicker :inline="true" />
+          <v-date-picker v-model="picker" />
         </v-row>
       </v-col>
     </v-container>
@@ -52,12 +53,10 @@
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker'
 import VideoPlayer from '@/components/VideoPlayer'
 export default {
   name: 'ChallengeCreation',
   components: {
-    Datepicker,
     VideoPlayer
   },
   data () {
@@ -66,6 +65,7 @@ export default {
         time: 0,
         day: ''
       },
+      challengeDescription: '',
       videoUploaded: false,
       videoUpload: null,
       video: null
