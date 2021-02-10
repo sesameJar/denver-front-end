@@ -4,12 +4,22 @@
       max-width="50%"
       src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
     />
-    <h3>challenge title</h3>
-    <span>10 days left</span>
+    <h3> {{ title }} </h3>
+    <span> {{ timeLeft }} days left</span>
   </div>
 </template>
 <script>
-// export default {
+export default {
+  props: {
+    title: {
+      type: String,
+      default: 'title'
+    },
+    timeLeft: {
+      type: Number,
+      default: 0
+    }
+  }
 
-// }
+}
 </script>
