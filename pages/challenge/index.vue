@@ -12,6 +12,7 @@
         <h2>Title</h2>
         <p>We Support: </p>
         <p>Started By: </p>
+        <Account />
         <p>Description</p>
       </div>
 
@@ -63,9 +64,10 @@
 </template>
 <script>
 import VideoPost from '@/components/VideoPost'
+import Account from '@/components/Account'
 
 export default {
-  components: { VideoPost },
+  components: { VideoPost, Account },
   data: () => ({
     items: [
       {
