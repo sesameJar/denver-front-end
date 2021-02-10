@@ -43,7 +43,7 @@ function getContractAddress (truffleConf, chainId) {
 }
 
 export const state = () => ({
-  contract: null
+  starRelayContract: null
 })
 
 export const getters = {
