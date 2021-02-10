@@ -1,20 +1,23 @@
 <template>
   <div>
     <div class="ChallengeCreation-upload-video">
-      <div v-if="!videoUploaded" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
+      <div v-if="!isUploadedVideo" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
         <div style="justify-content:center">
           <v-file-input
-            v-model="videoUpload"
+            v-model="videoFile"
             accept="video/*"
             placeholder="Select A Video"
             prepend-icon="mdi-video"
           />
         </div>
       </div>
-      <VideoPlayer
-        :key="video"
-        :video-data="video"
-      />
+      <div v-else style="margin-top:5%">
+        <VideoPlayer
+          :key="video"
+          style="max-height:450px"
+          :video-data="video"
+        />
+      </div>
     </div>
     <v-container class="ChallengeCreation-upload-video">
       <v-col>
@@ -43,10 +46,14 @@
         <v-row style="justify-content:center">
           <h1>Challenge Dates</h1>
         </v-row>
-        <br>
-        <br>
         <v-row style="justify-content:center">
           <v-date-picker v-model="picker" />
+        </v-row>
+        <br>
+        <v-row style="justify-content:center">
+          <v-btn @click="pushToIpfs">
+            Submit Challenge
+          </v-btn>
         </v-row>
       </v-col>
     </v-container>
@@ -70,8 +77,8 @@ export default {
       },
       challengeName: '',
       challengeDescription: '',
-      videoUploaded: false,
-      videoUpload: null,
+      isUploadedVideo: false,
+      videoFile: null,
       video: null
 
     }
@@ -79,13 +86,16 @@ export default {
   watch: {
     videoUpload () {
       this.video = URL.createObjectURL(this.videoUpload)
+      this.isUploadedVideo = true
     }
   },
   methods: {
     async pushToIpfs () {
       const infuraIpfsClient = ipfsClient({ host: process.env.INFURA_DOMAIN, port: process.env.INFURA_PORT, protocol: 'https' })
       try {
-        this.video.lastModifiedDate = new Date()
+        const wazy = new Date()
+        console.log(wazy, 'wazy')
+        this.video.lastModifiedDate = wazy
         this.video.name = this.challengeName
         const options = {
           content: this.video,
