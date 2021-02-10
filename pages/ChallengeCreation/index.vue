@@ -84,7 +84,7 @@ export default {
     }
   },
   watch: {
-    videoUpload () {
+    videoFile () {
       this.video = URL.createObjectURL(this.videoUpload)
       this.isUploadedVideo = true
     }
@@ -93,9 +93,7 @@ export default {
     async pushToIpfs () {
       const infuraIpfsClient = ipfsClient({ host: process.env.INFURA_DOMAIN, port: process.env.INFURA_PORT, protocol: 'https' })
       try {
-        const wazy = new Date()
-        console.log(wazy, 'wazy')
-        this.video.lastModifiedDate = wazy
+        this.video.lastModifiedDate = new Date()
         this.video.name = this.challengeName
         const options = {
           content: this.video,
