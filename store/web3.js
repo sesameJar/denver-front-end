@@ -32,7 +32,7 @@ function handleError (error) {
   }
 }
 
-function getContractAddress(truffleConf, chainId) {
+function getContractAddress (truffleConf, chainId) {
   if (!truffleConf || !chainId) { return '' }
   const { networks } = truffleConf
   if (networks[chainId.toString()]) {
@@ -48,8 +48,7 @@ export const state = () => ({
 
 export const getters = {
   starRelayAddress: state =>
-    getContractAddress(starRelayJson, state.chainId),
-  starRelayContract: null
+    getContractAddress(starRelayJson, state.chainId)
 }
 
 export const mutations = {
