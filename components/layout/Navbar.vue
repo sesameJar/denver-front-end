@@ -20,7 +20,7 @@
       <v-spacer />
       <n-link
         class="Navbar__link"
-        to="/ChallengeCreation"
+        to="/start"
       >
         Start a Challenge
       </n-link>
