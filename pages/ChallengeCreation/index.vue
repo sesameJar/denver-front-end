@@ -91,24 +91,20 @@ export default {
   },
   methods: {
     async pushToIpfs () {
-      const infuraIpfsClient = ipfsClient({ host: process.env.INFURA_DOMAIN, port: process.env.INFURA_PORT, protocol: 'https' })
+      const INFURA_DOMAIN = 'ipfs.infura.io'
+      const INFURA_PORT = '5001'
+      const infuraIpfsClient = ipfsClient({ host: INFURA_DOMAIN, port: INFURA_PORT, protocol: 'https' })
       try {
-        this.video.lastModifiedDate = new Date()
-        this.video.name = this.challengeName
         const options = {
-          content: this.video,
+          content: this.videoFile,
           pin: true
         }
-        const pinningResult = []
-        for await (const cid of infuraIpfsClient.add(options)) {
-          pinningResult.push(cid)
-        }
-        console.log('Saved to IPFS', pinningResult)
-        const value = pinningResult[1]
+        const upladedFile = await infuraIpfsClient.add(options)
+        console.log(test.cid)
         return {
-          cid: value.cid,
-          cidFullPath: `${value.cid}/${this.challengeName}`,
-          infuraIpfsUrl: `https://${process.env.INFURA_DOMAIN}/ipfs/${value.cid}/${this.challengeName}`
+          cid: upladedFile.cid,
+          cidFullPath: `${upladedFile.cid}/${this.challengeName}`,
+          infuraIpfsUrl: `https://${INFURA_DOMAIN}/ipfs/${test.cid}/${this.challengeName}`
         }
       } catch (error) {
         console.error('Failed to save asset to IPFS', error)
