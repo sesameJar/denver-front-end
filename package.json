@@ -14,6 +14,7 @@
     "@nuxtjs/axios": "^5.12.5",
     "core-js": "^3.8.3",
     "ipfs-http-client": "^49.0.2",
+    "ethers": "^5.0.30",
     "nuxt": "^2.14.12",
     "vuejs-datepicker": "^1.6.2",
     "vuetify": "^2.4.3"

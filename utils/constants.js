@@ -1,0 +1,11 @@
+// Application constants
+
+// Status of blockchain related functions
+const CONTRACT_STATUS = {
+  SUCCESS: 'SUCCESS',
+  INSUFFICIENT_FUNDS: 'INSUFFICIENT_FUNDS',
+  USER_REJECTED: 'USER_REJECTED',
+  UNCLASSIFIED_FAILURE: 'UNCLASSIFIED_FAILURE'
+}
+
+export { CONTRACT_STATUS }
