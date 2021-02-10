@@ -24,6 +24,7 @@
         >
           <h3>Challenge:</h3>
           <v-text-field
+            v-model="challengeName"
             class="ChallengeCreation-space-between-row-items"
             label="Challenge"
           />
@@ -54,6 +55,8 @@
 
 <script>
 import VideoPlayer from '@/components/VideoPlayer'
+import ipfsClient from 'ipfs-http-client'
+
 export default {
   name: 'ChallengeCreation',
   components: {
@@ -65,15 +68,46 @@ export default {
         time: 0,
         day: ''
       },
+      challengeName: '',
       challengeDescription: '',
       videoUploaded: false,
       videoUpload: null,
       video: null
+
     }
   },
   watch: {
     videoUpload () {
       this.video = URL.createObjectURL(this.videoUpload)
+    }
+  },
+  methods: {
+    async pushToIpfs () {
+      const infuraIpfsClient = ipfsClient({ host: process.env.INFURA_DOMAIN, port: process.env.INFURA_PORT, protocol: 'https' })
+      try {
+        this.video.lastModifiedDate = new Date()
+        this.video.name = this.challengeName
+        const options = {
+          content: this.video,
+          pin: true
+        }
+        const pinningResult = []
+        for await (const cid of infuraIpfsClient.add(options)) {
+          pinningResult.push(cid)
+        }
+        console.log('Saved to IPFS', pinningResult)
+        const value = pinningResult[1]
+        return {
+          cid: value.cid,
+          cidFullPath: `${value.cid}/${this.challengeName}`,
+          infuraIpfsUrl: `https://${process.env.INFURA_DOMAIN}/ipfs/${value.cid}/${this.challengeName}`
+        }
+      } catch (error) {
+        console.error('Failed to save asset to IPFS', error)
+        return {
+          error: error.message
+        }
+      }
     }
   }
 }
