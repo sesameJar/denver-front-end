@@ -85,7 +85,7 @@ export default {
   },
   watch: {
     videoFile () {
-      this.video = URL.createObjectURL(this.videoUpload)
+      this.video = URL.createObjectURL(this.videoFile)
       this.isUploadedVideo = true
     }
   },
