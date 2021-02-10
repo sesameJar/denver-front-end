@@ -2,7 +2,7 @@
   <div class="container">
     <div class="Home_header">
       <div class="Home_header-container">
-        <table style="width:100%">
+        <table>
           <tr>
             <th>12</th>
             <th>100</th>
