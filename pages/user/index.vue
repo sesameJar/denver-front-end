@@ -2,6 +2,11 @@
   <div>
     <div class="User__header">
       <Account />
+      <br><br>
+      <p class="User__description">
+        {{ description }}
+        I am MUMU the Challenger. I win and I win and I win. I love green. I love cactus. I love WIN.
+      </p>
       <table>
         <tr>
           <th>100</th>
@@ -48,12 +53,21 @@
 import Account from '@/components/Account'
 import ChallengeCard from '@/components/ChallengeCard'
 export default {
-  components: { Account, ChallengeCard }
+  components: { Account, ChallengeCard },
+  props: {
+    description: {
+      type: String,
+      default: 'Description'
+    }
+  }
 }
 </script>
 <style scoped>
 .User__header {
   display: flex;
   justify-content: space-between;
+}
+.User__description {
+  width: 30vw;
 }
 </style>

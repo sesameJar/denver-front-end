@@ -7,10 +7,6 @@
     </v-avatar>
     <h2> {{ username }}</h2>
     <br>
-    <p class="Account__description">
-      {{ description }}
-      I am MUMU the Challenger. I win and I win and I win. I love green. I love cactus. I love WIN.
-    </p>
   </div>
 </template>
 <script>
@@ -19,10 +15,6 @@ export default {
     username: {
       type: String,
       default: 'Username'
-    },
-    description: {
-      type: String,
-      default: 'Description'
     }
   }
 }
