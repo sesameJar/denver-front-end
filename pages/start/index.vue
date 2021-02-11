@@ -162,7 +162,7 @@ export default {
           invitedAddresses: [],
           endTimestamp: new Date(this.endDate).getTime() / 1000,
           minEntryFee: this.minEntryFee,
-          ipfsHash: uploadedMetadata
+          ipfsHash: uploadedMetadata.path
         })
       } catch (error) {
         console.error('Failed to save asset to IPFS', error)
