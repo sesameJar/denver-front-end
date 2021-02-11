@@ -97,15 +97,14 @@ export const actions = {
   startChallenge (vuexStore, params) {
     const { state } = vuexStore
     const { beneficiary, invitedAddresses, endTimestamp, minEntryFee, ipfsHash } = params
-    console.log('test', minEntryFee)
-    const ethValue = { value: ethers.utils.parseEther(minEntryFee.toString()) }
-    console.log('ethVal', ethValue)
+    const minEntryFeeBN = ethers.utils.parseEther(minEntryFee.toString())
+    const ethValue = { value: minEntryFeeBN }
     return state.starRelayContract
       .startChallenge(
         beneficiary,
         invitedAddresses,
         endTimestamp,
-        minEntryFee,
+        minEntryFeeBN,
         ipfsHash,
         ethValue
       )
