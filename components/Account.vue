@@ -1,20 +1,21 @@
 <template>
   <div>
     <v-avatar color="indigo">
-      <v-icon dark>
-        mdi-account-circle
-      </v-icon>
+      <img
+      :src="`https://avatars.onflow.org/avatar/${account
+                                .toString()
+                                .toLowerCase()}.svg`"
+                    alt="">
     </v-avatar>
-    <h2> {{ username }}</h2>
     <br>
   </div>
 </template>
 <script>
 export default {
   props: {
-    username: {
+    account: {
       type: String,
-      default: 'Username'
+      default: ''
     }
   }
 }

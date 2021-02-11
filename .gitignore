@@ -1,4 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
+# 20210210 in case someone didn't remove it
+src*
+
 ### Node template
 # Logs
 /logs

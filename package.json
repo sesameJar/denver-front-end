@@ -15,6 +15,7 @@
     "@nuxtjs/axios": "^5.12.5",
     "core-js": "^3.8.3",
     "graphql-tag": "^2.11.0",
+    "ethers": "^5.0.30",
     "nuxt": "^2.14.12",
     "vue-moment": "^4.1.0",
     "vuejs-datepicker": "^1.6.2",
