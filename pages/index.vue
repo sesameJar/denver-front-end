@@ -51,9 +51,6 @@ import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
 export default {
   components: { ChallengeCard },
   computed: {
-    // numChallenges () {
-    //   return contractQuery?.length === 0
-    // }
     numChallenges () {
       if (this.contractQuery) {
         return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numChallenges

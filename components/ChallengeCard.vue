@@ -4,7 +4,15 @@
       :video-data="challenge.videos[0].id"
     />
     <h3> {{ challenge.title }} </h3>
-    <span> {{ challenge.endTimestamp }} days left</span>
+    <div
+      v-if="challenge.endTimestamp > 0"
+    >
+      <p>
+        {{
+          new Date(challenge.endTimestamp * 1000) | moment("from")
+        }}
+      </p>
+    </div>
   </div>
 </template>
 <script>

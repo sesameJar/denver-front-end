@@ -24,7 +24,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/vuetify.js' }
+    { src: '~/plugins/vuetify.js' },
+    { src: '~/plugins/vue-moment.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -54,8 +55,7 @@ export default {
       default: {
         httpEndpoint: 'https://api.thegraph.com/subgraphs/name/ehsueh/star-relay'
       }
-    },
-    errorHandler: '~/apollo/global-apollo-error-handler.js'
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
