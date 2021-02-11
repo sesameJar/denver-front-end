@@ -9,8 +9,8 @@
       </p>
       <table>
         <tr>
-          <th>100</th>
-          <th>11</th>
+          <th>{{ accountByIdQuery.totalFund }}</th>
+          <th>{{ numChallenges }}</th>
         </tr>
         <tr>
           <td>Total Funds</td>
@@ -21,26 +21,8 @@
     <br><br><br>
     <div class="User__video-cards">
       <v-row>
-        <v-col cols="12" md="4">
-          <ChallengeCard />
-          <v-btn>
-            <v-icon>mdi-thumb-up</v-icon> WOW
-          </v-btn>
-        </v-col>
-        <v-col cols="12" md="4">
-          <ChallengeCard />
-          <v-btn>
-            <v-icon>mdi-thumb-up</v-icon> WOW
-          </v-btn>
-        </v-col>
-        <v-col cols="12" md="4">
-          <ChallengeCard />
-          <v-btn>
-            <v-icon>mdi-thumb-up</v-icon> WOW
-          </v-btn>
-        </v-col>
-        <v-col cols="12" md="4">
-          <ChallengeCard />
+        <v-col v-for="(challenge, index) in accountByIdQuery.challenges" :key="index" cols="12" md="4">
+          <ChallengeCard :challenge="challenge" />
           <v-btn>
             <v-icon>mdi-thumb-up</v-icon> WOW
           </v-btn>
@@ -52,12 +34,33 @@
 <script>
 import Account from '@/components/Account'
 import ChallengeCard from '@/components/ChallengeCard'
+import { ACCOUNT_BY_ID } from '@/queries/accountQuery.gql'
 export default {
   components: { Account, ChallengeCard },
   props: {
     description: {
       type: String,
       default: 'Description'
+    }
+  },
+  // eslint-disable-next-line require-await
+  async asyncData ({ params }) {
+    const accountIdFromURL = params.id // When calling /abc the slug will be "abc"
+    return { accountIdFromURL }
+  },
+  apollo: {
+    accountByIdQuery: {
+      query: ACCOUNT_BY_ID,
+      variables () {
+        return {
+          id: this.accountIdFromURL
+        }
+      },
+      skip () {
+        return {
+          id: !this.accountIdFromURL
+        }
+      }
     }
   }
 }

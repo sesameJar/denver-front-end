@@ -1,0 +1,13 @@
+query ACCOUNT_BY_ID($id: String!) {
+  accountByIdQuery: accounts(id: $id) {
+    id
+    numChallenges
+    challenges {
+      id
+      title
+      description
+    }
+    totalFund
+    wins
+  }
+}

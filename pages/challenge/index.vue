@@ -1,53 +1,60 @@
 <template>
-  <section>
-    <div class="Challenge__header">
-      <div class="Challenge__header-left">
-        <h2>Title</h2>
-        <p>We Support: </p>
-        <p>Started By: </p>
-        <Account />
-        <p>Description</p>
+  <article>
+    <section v-if="challengeById">
+      <div class="Challenge__header">
+        <div class="Challenge__header-left">
+          <h2>Title</h2>
+          <p>We Support: </p>
+          <p>Started By: </p>
+          <Account />
+          <p>Description</p>
+        </div>
+
+        <div class="Challenge__stats">
+          <span>total funds</span>
+          <span># challenges</span>
+          <br>
+          <span>Time Left</span>
+          <br>
+          <v-btn
+            class="ma-2"
+            outlined
+            color="indigo"
+          >
+            Jump In!
+          </v-btn>
+        </div>
       </div>
 
-      <div class="Challenge__stats">
-        <span>total funds</span>
-        <span># challenges</span>
-        <br>
-        <span>Time Left</span>
-        <br>
-        <v-btn
-          class="ma-2"
-          outlined
-          color="indigo"
-        >
-          Jump In!
-        </v-btn>
-      </div>
-    </div>
-
-    <br><br>
-    <v-timeline
-      align-top
-      :dense="$vuetify.breakpoint.smAndDown"
-    >
-      <v-timeline-item
-        v-for="(item, i) in items"
-        :key="i"
-        :color="item.color"
-        :icon="item.icon"
-        fill-dot
+      <br><br>
+      <v-timeline
+        align-top
+        :dense="$vuetify.breakpoint.smAndDown"
       >
-        <VideoPost :video="video" />
-      </v-timeline-item>
-    </v-timeline>
-  </section>
+        <v-timeline-item
+          v-for="(video, i) in challengeByIdQuery.videos"
+          :key="i"
+          fill-dot
+        >
+          <VideoPost :video="video" />
+        </v-timeline-item>
+      </v-timeline>
+    </section>
+  </article>
 </template>
 <script>
+import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
 import VideoPost from '@/components/VideoPost'
 import Account from '@/components/Account'
 
 export default {
   components: { VideoPost, Account },
+
+  // eslint-disable-next-line require-await
+  async asyncData ({ params }) {
+    const challengeIdFromURL = params.id // When calling /abc the slug will be "abc"
+    return { challengeIdFromURL }
+  },
   data: () => ({
     items: [
       {
@@ -67,7 +74,25 @@ export default {
         icon: 'mdi-buffer'
       }
     ]
-  })
+  }),
+  computed: {
+
+  },
+  apollo: {
+    challengeByIdQuery: {
+      query: CHALLENGE_BY_ID,
+      variables () {
+        return {
+          id: this.challengeIdFromURL
+        }
+      },
+      skip () {
+        return {
+          id: !this.challengeIdFromURL
+        }
+      }
+    }
+  }
 }
 </script>
 
