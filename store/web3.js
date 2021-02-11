@@ -49,6 +49,7 @@ export const state = () => ({
 export const getters = {
   starRelayAddress: state =>
     getContractAddress(starRelayJson, state.chainId)
+
 }
 
 export const mutations = {
