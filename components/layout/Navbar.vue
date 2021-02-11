@@ -29,11 +29,21 @@
         class="Navbar__link"
         to="/"
       >
-        Sign In
+        <connect-btn />
       </n-link>
     </div>
   </v-toolbar>
 </template>
+<script>
+import ConnectBtn from '@/components/ConnectBtn'
+export default {
+  name: 'Navbar',
+  components: {
+    ConnectBtn
+
+  }
+}
+</script>
 <style scoped>
 .Navbar__container {
   margin-left: 50%;

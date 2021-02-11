@@ -43,7 +43,8 @@ function getContractAddress (truffleConf, chainId) {
 }
 
 export const state = () => ({
-  starRelayContract: null
+  starRelayContract: null,
+  account: null
 })
 
 export const getters = {
@@ -59,6 +60,9 @@ export const mutations = {
   },
   setContract (state, contract) {
     state.starRelayContract = contract
+  },
+  setAccount (state, account) {
+    state.account = account
   }
 }
 
@@ -81,6 +85,10 @@ export const actions = {
         signer
       )
       commit('setContract', starRelay)
+
+      const accounts = await provider.listAccounts()
+      const account = accounts && accounts[0]
+      commit('setAccount', account)
     } catch (e) {
       console.log(e)
     }
