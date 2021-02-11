@@ -65,7 +65,7 @@ import VideoPlayer from '@/components/VideoPlayer'
 import ipfsClient from 'ipfs-http-client'
 
 export default {
-  name: 'ChallengeCreation',
+  name: 'Start',
   components: {
     VideoPlayer
   },
@@ -95,16 +95,21 @@ export default {
       const INFURA_PORT = '5001'
       const infuraIpfsClient = ipfsClient({ host: INFURA_DOMAIN, port: INFURA_PORT, protocol: 'https' })
       try {
-        const options = {
+        const video = {
           content: this.videoFile,
           pin: true
         }
-        const upladedFile = await infuraIpfsClient.add(options)
-        console.log(test.cid)
+        const uploadedFile = await infuraIpfsClient.add(video)
+        const metaData = {
+          title: this.challengeName,
+          description: this.challengeDescription,
+          hash: uploadedFile.cid
+        }
+        const uploadedMetadata = await infuraIpfsClient.add(new File(new Blob(JSON.stringify(metaData), { type: 'application/json' }), this.challengeName))
+        console.log(uploadedMetadata.cid)
         return {
-          cid: upladedFile.cid,
-          cidFullPath: `${upladedFile.cid}/${this.challengeName}`,
-          infuraIpfsUrl: `https://${INFURA_DOMAIN}/ipfs/${test.cid}/${this.challengeName}`
+          cid: uploadedMetadata.cid,
+          infuraIpfsUrl: `https://${INFURA_DOMAIN}/ipfs/${uploadedMetadata.cid}`
         }
       } catch (error) {
         console.error('Failed to save asset to IPFS', error)

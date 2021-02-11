@@ -63,7 +63,7 @@
 
 <script>
 export default {
-  name: 'JoinChallenge'
+  name: 'Join'
 }
 </script>
 
