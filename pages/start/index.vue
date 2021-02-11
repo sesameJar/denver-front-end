@@ -36,11 +36,29 @@
           style="align-items: center;"
           class="ChallengeCreation-center-row-items"
         >
-          <h3>Charity Address:</h3>
+          <h3>I want to support:</h3>
+          <!-- TODO: fix this dropdown -->
+          <v-select
+            v-model="selectedCharity"
+            :hint="`${selectedCharity.charity}, ${selectedCharity.address}`"
+            :items="charityList"
+            item-text="charity"
+            item-value="address"
+            label="selectedCharity"
+            persistent-hint
+            return-object
+            single-line
+          />
+        </v-row>
+        <v-row
+          style="align-items: center;"
+          class="ChallengeCreation-center-row-items"
+        >
+          <h3>Min Donation:</h3>
           <v-text-field
-            v-model="charityAddress"
+            v-model="minEntryFeeInput"
             class="ChallengeCreation-space-between-row-items"
-            label="Charity"
+            label="In ETH"
           />
         </v-row>
         <v-row class="ChallengeCreation-center-row-items">
@@ -76,8 +94,10 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 import VideoPlayer from '@/components/VideoPlayer'
 import ipfsClient from 'ipfs-http-client'
+import { CHARITY_LIST } from '@/utils/constants'
 
 export default {
   name: 'Start',
@@ -90,21 +110,30 @@ export default {
       endDate: null,
       challengeName: '',
       challengeDescription: '',
-      charityAddress: '',
+      minEntryFeeInput: 0.1,
       isUploadedVideo: false,
       videoFile: null,
-      video: null
-
+      video: null,
+      selectedCharity: CHARITY_LIST[0]
     }
   },
-
+  computed: {
+    minEntryFee () {
+      return parseFloat(this.minEntryFeeInput).toFixed(3)
+    }
+  },
   watch: {
     videoFile () {
       this.video = URL.createObjectURL(this.videoFile)
       this.isUploadedVideo = true
     }
   },
+  created () {
+    this.charityList = CHARITY_LIST
+    console.log(this.charityList)
+  },
   methods: {
+    ...mapActions('web3', ['startChallenge']),
     async pushToIpfs () {
       const INFURA_DOMAIN = 'ipfs.infura.io'
       const INFURA_PORT = '5001'
@@ -128,11 +157,11 @@ export default {
         }
         const uploadedMetadata = await infuraIpfsClient.add(metaDataFileStream)
         console.log(uploadedMetadata)
-        this.$store.dispatch('web3ethers/startChallenge', {
-          beneficiary: this.charityAddress,
-          // invitedAddresses: ,
+        await this.startChallenge({
+          beneficiary: this.selectedCharity.address,
+          invitedAddresses: [],
           endTimestamp: new Date(this.endDate).getTime() / 1000,
-          minEntryFee: 100, // revise this<<<
+          minEntryFee: this.minEntryFee,
           ipfsHash: uploadedMetadata
         })
       } catch (error) {
