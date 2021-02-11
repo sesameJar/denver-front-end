@@ -34,6 +34,7 @@
 <script>
 import Account from '@/components/Account'
 import ChallengeCard from '@/components/ChallengeCard'
+import { getServerTime } from '@/utils/helpers'
 import { ACCOUNT_BY_ID } from '@/queries/accountQuery.gql'
 export default {
   components: { Account, ChallengeCard },
@@ -47,6 +48,24 @@ export default {
   async asyncData ({ params }) {
     const accountIdFromURL = params.id // When calling /abc the slug will be "abc"
     return { accountIdFromURL }
+  },
+  data () {
+    return {
+      pollingStarted: false
+    }
+  },
+  mounted () {
+    // call once right away on mount
+    getServerTime()
+    window.setInterval(() => {
+      getServerTime()
+    }, 10000)
+    if (!this.pollingStarted) {
+      this.$apollo.queries.accountByIdQuery.startPolling(
+        15000
+      )
+      this.pollingStarted = true
+    }
   },
   apollo: {
     accountByIdQuery: {

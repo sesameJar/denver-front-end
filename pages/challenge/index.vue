@@ -45,6 +45,7 @@
 <script>
 import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
 import VideoPost from '@/components/VideoPost'
+import { getServerTime } from '@/utils/helpers'
 import Account from '@/components/Account'
 
 export default {
@@ -55,28 +56,43 @@ export default {
     const challengeIdFromURL = params.id // When calling /abc the slug will be "abc"
     return { challengeIdFromURL }
   },
-  data: () => ({
-    items: [
-      {
-        color: 'red lighten-2',
-        icon: 'mdi-star'
-      },
-      {
-        color: 'purple darken-1',
-        icon: 'mdi-book-variant'
-      },
-      {
-        color: 'green lighten-1',
-        icon: 'mdi-airballoon'
-      },
-      {
-        color: 'indigo',
-        icon: 'mdi-buffer'
-      }
-    ]
-  }),
-  computed: {
-
+  data () {
+    return {
+      pollingStarted: false
+    }
+  },
+  // data: () => ({
+  //   items: [
+  //     {
+  //       color: 'red lighten-2',
+  //       icon: 'mdi-star'
+  //     },
+  //     {
+  //       color: 'purple darken-1',
+  //       icon: 'mdi-book-variant'
+  //     },
+  //     {
+  //       color: 'green lighten-1',
+  //       icon: 'mdi-airballoon'
+  //     },
+  //     {
+  //       color: 'indigo',
+  //       icon: 'mdi-buffer'
+  //     }
+  //   ]
+  // }),
+  mounted () {
+    // call once right away on mount
+    getServerTime()
+    window.setInterval(() => {
+      getServerTime()
+    }, 10000)
+    if (!this.pollingStarted) {
+      this.$apollo.queries.accountByIdQuery.startPolling(
+        15000
+      )
+      this.pollingStarted = true
+    }
   },
   apollo: {
     challengeByIdQuery: {

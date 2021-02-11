@@ -51,6 +51,11 @@ import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
 import { getServerTime } from '@/utils/helpers'
 export default {
   components: { ChallengeCard },
+  data () {
+    return {
+      pollingStarted: false
+    }
+  },
   computed: {
     numChallenges () {
       if (this.contractQuery) {
