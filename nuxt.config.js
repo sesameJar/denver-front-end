@@ -42,11 +42,21 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
 
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/apollo'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: 'https://api.thegraph.com/subgraphs/name/ehsueh/star-relay'
+      }
+    },
+    errorHandler: '~/apollo/global-apollo-error-handler.js'
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

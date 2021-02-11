@@ -1,0 +1,13 @@
+query CHALLENGES_QUERY {
+  challengesQuery: challenges {
+    id
+    creator
+    endTimestamp
+    videos {
+      id
+      creator
+      challenge
+      uploadTimestamp
+    }
+  }
+}

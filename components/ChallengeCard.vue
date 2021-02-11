@@ -1,25 +1,21 @@
 <template>
   <div>
-    <v-img
-      max-width="50%"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+    <VideoPlayer
+      :video-data="challenge.videos[0].id"
     />
-    <h3> {{ title }} </h3>
-    <span> {{ timeLeft }} days left</span>
+    <h3> {{ challenge.title }} </h3>
+    <span> {{ challenge.endTimestamp }} days left</span>
   </div>
 </template>
 <script>
+import VideoPlayer from '@/components/VideoPlayer'
 export default {
+  components: { VideoPlayer },
   props: {
-    title: {
-      type: String,
-      default: 'title'
-    },
-    timeLeft: {
-      type: Number,
-      default: 0
+    challenge: {
+      type: Object,
+      default: null
     }
   }
-
 }
 </script>

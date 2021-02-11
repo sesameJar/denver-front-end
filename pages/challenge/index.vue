@@ -1,12 +1,5 @@
 <template>
   <section>
-    <!-- <v-timeline>
-    <v-timeline-item>timeline item</v-timeline-item>
-    <v-timeline-item class="text-right">
-      timeline item
-    </v-timeline-item>
-    <v-timeline-item>timeline item</v-timeline-item>
-  </v-timeline> -->
     <div class="Challenge__header">
       <div class="Challenge__header-left">
         <h2>Title</h2>
@@ -44,20 +37,7 @@
         :icon="item.icon"
         fill-dot
       >
-        <!-- <v-card-title class="title">
-            Lorem Ipsum Dolor
-          </v-card-title>
-          <v-card-text class="white text--primary">
-            <p>Lorem ipsum dolor sit amet, no nam oblique veritus. Commune scaevola imperdiet nec ut, sed euismod convenire principes at. Est et nobis iisque percipit, an vim zril disputando voluptatibus, vix an salutandi sententiae.</p>
-            <v-btn
-              :color="item.color"
-              class="mx-0"
-              outlined
-            >
-              Button
-            </v-btn>
-          </v-card-text> -->
-        <video-post />
+        <VideoPost :video="video" />
       </v-timeline-item>
     </v-timeline>
   </section>
@@ -101,5 +81,10 @@ export default {
 <style>
 .v-timeline:before {
 margin-left: 50%;
+}
+</style>
+<style>
+.v-btn:not(.v-btn--round).v-size--default {
+  margin-bottom: 5px;
 }
 </style>
