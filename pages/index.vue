@@ -76,6 +76,24 @@ export default {
       return null
     }
   },
+  mounted () {
+    // call once right away on mount
+    this.getServerTime()
+    window.setInterval(() => {
+      this.getServerTime()
+    }, 10000)
+    if (!this.pollingStarted) {
+      this.$apollo.queries.challengesQuery.startPolling(
+        15000
+      )
+      this.pollingStarted = true
+    }
+  },
+  methods: {
+    async getServerTime () {
+      this.serverTime = await this.$getServerTime()
+    }
+  },
   apollo: {
     challengesQuery: {
       query: CHALLENGES_QUERY
