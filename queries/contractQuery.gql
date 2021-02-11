@@ -1,0 +1,10 @@
+query CONTRACT_QUERY {
+  contractQuery: contracts {
+    id
+    numChallenges
+    numChallengers
+    numVideos
+    numInvitations
+    totalFund
+  }
+}

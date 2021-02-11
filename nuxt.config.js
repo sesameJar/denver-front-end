@@ -24,7 +24,8 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    { src: '~/plugins/vuetify.js' }
+    { src: '~/plugins/vuetify.js' },
+    { src: '~/plugins/vue-moment.js' }
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -42,11 +43,20 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
 
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
+    '@nuxtjs/apollo'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
+
+  apollo: {
+    clientConfigs: {
+      default: {
+        httpEndpoint: 'https://api.thegraph.com/subgraphs/name/ehsueh/star-relay'
+      }
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {

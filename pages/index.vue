@@ -4,58 +4,86 @@
       <div class="Home_header-container">
         <table>
           <tr>
-            <th>12</th>
-            <th>100</th>
-            <th>11</th>
+            <th>
+              {{ numChallenges }}
+            </th>
+            <th v-if="contractQuery">
+              {{ totalFund }}
+            </th>
+            <th v-if="contractQuery">
+              {{ numChallengers }}
+            </th>
+            <th v-if="contractQuery">
+              {{ numVideos }}
+            </th>
           </tr>
           <tr>
             <td>Open Challenges</td>
             <td>Total Funds</td>
-            <td> # Challenges</td>
+            <td> # Challengers</td>
+            <td> # Videos</td>
           </tr>
         </table>
+        <!-- <div>{{ contractQuery.length }}</div> -->
       </div>
       <span>BRING IT ON</span>
     </div>
     <br><br><br>
     <div class="Home__browse">
       <v-row>
-        <v-col cols="12" md="4">
-          <ChallengeCard />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <v-img height="300px" src="https://picsum.photos/seed/1/200/100" />
+        <v-col
+          v-for="challenge in challengesQuery"
+          :key="challenge.id"
+          cols="12"
+          md="4"
+        >
+          <ChallengeCard :chanlenge="challenge" />
         </v-col>
       </v-row>
     </div>
   </div>
 </template>
-
 <script>
 import ChallengeCard from '@/components/ChallengeCard'
+// import VideoPost from '@/components/VideoPost'
+import { CONTRACT_QUERY } from '@/queries/contractQuery.gql'
+import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
 export default {
-  components: { ChallengeCard }
+  components: { ChallengeCard },
+  computed: {
+    numChallenges () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numChallenges
+      }
+      return null
+    },
+    totalFund () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].totalFund
+      }
+      return null
+    },
+    numChallengers () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numChallengers
+      }
+      return null
+    },
+    numVideos () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numVideos
+      }
+      return null
+    }
+  },
+  apollo: {
+    challengesQuery: {
+      query: CHALLENGES_QUERY
+    },
+    contractQuery: {
+      query: CONTRACT_QUERY
+    }
+  }
 }
 </script>
 
