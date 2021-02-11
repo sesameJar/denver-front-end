@@ -105,5 +105,27 @@ export const actions = {
         ipfsHash)
       .then(res => handleResponse(res))
       .catch(error => handleError(error))
+  },
+  // Join a challenge
+  jumpIn (vuexStore, params) {
+    const { state } = vuexStore
+    const { challengeId, invitedAddresses, ipfsHash } = params
+    return state.starRelayContract
+      .jumpIn(
+        challengeId,
+        invitedAddresses,
+        ipfsHash)
+      .then(res => handleResponse(res))
+      .catch(error => handleError(error))
+  },
+  // Resolve a challenge
+  resolveChallenge (vuexStore, params) {
+    const { state } = vuexStore
+    const { challengeId } = params
+    return state.starRelayContract
+      .resolveChallenge(
+        challengeId)
+      .then(res => handleResponse(res))
+      .catch(error => handleError(error))
   }
 }
