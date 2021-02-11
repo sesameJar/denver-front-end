@@ -25,29 +25,68 @@
           style="align-items: center;"
           class="ChallengeCreation-center-row-items"
         >
-          <h3>Challenge:</h3>
+          <h3>Challenge Name:</h3>
           <v-text-field
+            v-model="challengeName"
             class="ChallengeCreation-space-between-row-items"
             label="Challenge"
           />
         </v-row>
+        <v-row
+          style="align-items: center;"
+          class="ChallengeCreation-center-row-items"
+        >
+          <h3>I want to support:</h3>
+          <!-- TODO: fix this dropdown -->
+          <v-select
+            v-model="selectedCharity"
+            :hint="`${selectedCharity.charity}, ${selectedCharity.address}`"
+            :items="charityList"
+            item-text="charity"
+            item-value="address"
+            label="selectedCharity"
+            persistent-hint
+            return-object
+            single-line
+          />
+        </v-row>
+        <v-row
+          style="align-items: center;"
+          class="ChallengeCreation-center-row-items"
+        >
+          <h3>Min Donation:</h3>
+          <v-text-field
+            v-model="minEntryFeeInput"
+            class="ChallengeCreation-space-between-row-items"
+            label="In ETH"
+          />
+        </v-row>
         <v-row class="ChallengeCreation-center-row-items">
-          <h3 style="margin-top:2%">
+          <h3 style="margin-top:3%">
             Description:
           </h3>
           <v-textarea
+            v-model="challengeDescription"
             class="ChallengeCreation-space-between-row-items"
             name="challenge-description"
             label="Video Description"
           />
         </v-row>
         <v-row style="justify-content:center">
-          <h1>Challenge Dates</h1>
+          <h2>Challenge End Date</h2>
+        </v-row>
+        <v-row style="justify-content:center;" class="ChallengeCreation-calendar-spacing">
+          <v-date-picker
+            v-model="endDate"
+            no-title
+            elevation="15"
+          />
         </v-row>
         <br>
-        <br>
         <v-row style="justify-content:center">
-          <Datepicker :inline="true" />
+          <v-btn @click="pushToIpfs">
+            Submit Challenge
+          </v-btn>
         </v-row>
       </v-col>
     </v-container>
@@ -55,29 +94,82 @@
 </template>
 
 <script>
-import Datepicker from 'vuejs-datepicker'
+import { mapActions } from 'vuex'
 import VideoPlayer from '@/components/VideoPlayer'
+import ipfsClient from 'ipfs-http-client'
+import { CHARITY_LIST } from '@/utils/constants'
+
 export default {
-  name: 'ChallengeCreation',
+  name: 'Start',
   components: {
-    Datepicker,
     VideoPlayer
+
   },
   data () {
     return {
-      date: {
-        time: 0,
-        day: ''
-      },
+      endDate: null,
+      challengeName: '',
+      challengeDescription: '',
+      minEntryFeeInput: 0.1,
       isUploadedVideo: false,
       videoFile: null,
-      video: null
+      video: null,
+      selectedCharity: CHARITY_LIST[0]
+    }
+  },
+  computed: {
+    minEntryFee () {
+      return parseFloat(this.minEntryFeeInput).toFixed(3)
     }
   },
   watch: {
     videoFile () {
       this.video = URL.createObjectURL(this.videoFile)
       this.isUploadedVideo = true
+    }
+  },
+  created () {
+    this.charityList = CHARITY_LIST
+    console.log(this.charityList)
+  },
+  methods: {
+    ...mapActions('web3', ['startChallenge']),
+    async pushToIpfs () {
+      const INFURA_DOMAIN = 'ipfs.infura.io'
+      const INFURA_PORT = '5001'
+      const infuraIpfsClient = ipfsClient({ host: INFURA_DOMAIN, port: INFURA_PORT, protocol: 'https' })
+      try {
+        const video = {
+          content: this.videoFile,
+          pin: true
+        }
+        const uploadedFile = await infuraIpfsClient.add(video)
+        const metaData = {
+          title: this.challengeName,
+          description: this.challengeDescription,
+          videoUri: `https://${INFURA_DOMAIN}/ipfs/${uploadedFile.cid.toString()}`
+        }
+        const dataBlobMeta = new Blob([JSON.stringify(metaData)], { type: 'application/json' })
+        const fileStreamMeta = new File([dataBlobMeta], this.challengeName)
+        const metaDataFileStream = {
+          content: fileStreamMeta,
+          pin: true
+        }
+        const uploadedMetadata = await infuraIpfsClient.add(metaDataFileStream)
+        console.log(uploadedMetadata)
+        await this.startChallenge({
+          beneficiary: this.selectedCharity.address,
+          invitedAddresses: [],
+          endTimestamp: new Date(this.endDate).getTime() / 1000,
+          minEntryFee: this.minEntryFee,
+          ipfsHash: uploadedMetadata
+        })
+      } catch (error) {
+        console.error('Failed to save asset to IPFS', error)
+        return {
+          error: error.message
+        }
+      }
     }
   }
 }
@@ -108,6 +200,10 @@ export default {
  }
 .ChallengeCreation-space-between-row-items {
    margin-left:4%;
+ }
+.ChallengeCreation-calendar-spacing {
+   margin-top:4%;
+   height:450px;
  }
 
 </style>

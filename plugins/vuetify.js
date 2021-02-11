@@ -5,6 +5,8 @@ Vue.use(Vuetify, {
   components: { VBtn, VCol, VRow, VContainer, VTextField, VTextarea, VFileInput }
 })
 
-const opts = {}
+const opts = {
+  // theme: { dark: true }
+}
 
 export default new Vuetify(opts)

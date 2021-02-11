@@ -1,60 +1,30 @@
 <template>
-  <v-toolbar>
-    <v-toolbar
-      dense
-      floating
-    >
-      <v-text-field
-        hide-details
-        prepend-icon="mdi-magnify"
-        single-line
-      />
-    </v-toolbar>
-    <div class="Navbar__container">
-      <n-link
-        class="Navbar__link"
-        to="/"
-      >
-        Challenge Me!
-      </n-link>
-      <v-spacer />
-      <n-link
-        class="Navbar__link"
-        to="/start"
-      >
-        Start a Challenge
-      </n-link>
-      <v-spacer />
-      <n-link
-        class="Navbar__link"
-        to="/"
-      >
-        <connect-btn />
-      </n-link>
-    </div>
+  <v-toolbar dark flat>
+    <!-- <v-btn icon>
+      <v-icon>mdi-magnify</v-icon>
+    </v-btn> -->
+    <v-spacer />
+    <v-btn to="/" text plain nuxt>
+      Challenge Me!
+    </v-btn>
+    <v-btn text plain outlined nuxt to="/start">
+      Start a Challenge
+    </v-btn>
+
+    <v-btn tile plain nuxt>
+      <connect-btn />
+    </v-btn>
   </v-toolbar>
 </template>
 <script>
 import ConnectBtn from '@/components/ConnectBtn'
+
 export default {
   name: 'Navbar',
   components: {
     ConnectBtn
-
   }
 }
 </script>
 <style scoped>
-.Navbar__container {
-  margin-left: 50%;
-  display: flex;
-  flex-direction: row;
-  flex-grow: 5;
-}
-
-.Navbar__link {
-  color: black;
-  text-decoration: none;
-  flex-grow: 2;
-}
 </style>

@@ -50,6 +50,7 @@ export const state = () => ({
 export const getters = {
   starRelayAddress: state =>
     getContractAddress(starRelayJson, state.chainId)
+
 }
 
 export const mutations = {
@@ -96,13 +97,43 @@ export const actions = {
   startChallenge (vuexStore, params) {
     const { state } = vuexStore
     const { beneficiary, invitedAddresses, endTimestamp, minEntryFee, ipfsHash } = params
+    console.log('test', minEntryFee)
+    const ethValue = { value: ethers.utils.parseEther(minEntryFee.toString()) }
+    console.log('ethVal', ethValue)
     return state.starRelayContract
       .startChallenge(
         beneficiary,
         invitedAddresses,
         endTimestamp,
         minEntryFee,
-        ipfsHash)
+        ipfsHash,
+        ethValue
+      )
+      .then(res => handleResponse(res))
+      .catch(error => handleError(error))
+  },
+  // Join a challenge
+  jumpIn (vuexStore, params) {
+    const { state } = vuexStore
+    const { challengeId, invitedAddresses, ipfsHash, donation } = params
+    const ethValue = { value: ethers.utils.parseEther(donation.toString()) }
+    return state.starRelayContract
+      .jumpIn(
+        challengeId,
+        invitedAddresses,
+        ipfsHash,
+        ethValue
+      )
+      .then(res => handleResponse(res))
+      .catch(error => handleError(error))
+  },
+  // Resolve a challenge
+  resolveChallenge (vuexStore, params) {
+    const { state } = vuexStore
+    const { challengeId } = params
+    return state.starRelayContract
+      .resolveChallenge(
+        challengeId)
       .then(res => handleResponse(res))
       .catch(error => handleError(error))
   }
