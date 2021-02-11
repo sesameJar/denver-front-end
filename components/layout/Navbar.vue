@@ -5,9 +5,10 @@
       </v-btn> -->
       <v-spacer></v-spacer>
       <v-btn
-        href="/"
+        to="/"
         text
         plain
+        nuxt
       >
         Challenge Me!
       </v-btn>
@@ -15,7 +16,8 @@
         text
         plain
         outlined
-        href="/start"
+        nuxt
+        to="/start"
       >
         Start a Challenge
       </v-btn>
@@ -23,7 +25,7 @@
       <v-btn
         tile
         plain
-
+        nuxt
       >
         <connect-btn />
       </v-btn>

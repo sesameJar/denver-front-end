@@ -49,10 +49,6 @@ export default {
   axios: {},
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
-  build: {
-    extend (config, { loaders: { vue } }) {
-        vue.transformAssetUrls.div = ['data-background-src']
-    }
-  }
+  build: {}
 
 }
