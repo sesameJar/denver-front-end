@@ -103,14 +103,16 @@ export default {
         const metaData = {
           title: this.challengeName,
           description: this.challengeDescription,
-          hash: uploadedFile.cid
+          videoUri: `https://${INFURA_DOMAIN}/ipfs/${uploadedFile.cid.toString()}`
         }
-        const uploadedMetadata = await infuraIpfsClient.add(new File(new Blob(JSON.stringify(metaData), { type: 'application/json' }), this.challengeName))
-        console.log(uploadedMetadata.cid)
-        return {
-          cid: uploadedMetadata.cid,
-          infuraIpfsUrl: `https://${INFURA_DOMAIN}/ipfs/${uploadedMetadata.cid}`
+        const dataBlobMeta = new Blob([JSON.stringify(metaData)], { type: 'application/json' })
+        const fileStreamMeta = new File([dataBlobMeta], this.challengeName)
+        const metaDataFileStream = {
+          content: fileStreamMeta,
+          pin: true
         }
+        const uploadedMetadata = await infuraIpfsClient.add(metaDataFileStream)
+        console.log(uploadedMetadata)
       } catch (error) {
         console.error('Failed to save asset to IPFS', error)
         return {
