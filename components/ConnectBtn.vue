@@ -1,6 +1,8 @@
 <template>
   <div>
-    <button v-if="!account" @click="connectWallet">Connect</button>
+    <button v-if="!account" @click="connectWallet">
+      Connect
+    </button>
     <Account v-else :account="account" />
   </div>
 </template>
@@ -8,7 +10,7 @@
 import { mapState, mapActions } from 'vuex'
 import Account from '@/components/Account'
 export default {
-  name: 'Connect-Button',
+  name: 'ConnectButton',
   components: {
     Account
   },

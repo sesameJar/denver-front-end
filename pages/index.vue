@@ -48,6 +48,7 @@ import ChallengeCard from '@/components/ChallengeCard'
 // import VideoPost from '@/components/VideoPost'
 import { CONTRACT_QUERY } from '@/queries/contractQuery.gql'
 import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
+import { getServerTime } from '@/utils/helpers'
 export default {
   components: { ChallengeCard },
   computed: {
@@ -78,20 +79,15 @@ export default {
   },
   mounted () {
     // call once right away on mount
-    this.getServerTime()
+    getServerTime()
     window.setInterval(() => {
-      this.getServerTime()
+      getServerTime()
     }, 10000)
     if (!this.pollingStarted) {
       this.$apollo.queries.challengesQuery.startPolling(
         15000
       )
       this.pollingStarted = true
-    }
-  },
-  methods: {
-    async getServerTime () {
-      this.serverTime = await this.$getServerTime()
     }
   },
   apollo: {

@@ -2,10 +2,11 @@
   <div>
     <v-avatar color="indigo">
       <img
-      :src="`https://avatars.onflow.org/avatar/${account
-                                .toString()
-                                .toLowerCase()}.svg`"
-                    alt="">
+        :src="`https://avatars.onflow.org/avatar/${account
+          .toString()
+          .toLowerCase()}.svg`"
+        alt=""
+      >
     </v-avatar>
     <br>
   </div>

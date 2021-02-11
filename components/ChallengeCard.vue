@@ -7,7 +7,7 @@
     <div
       v-if="challenge.endTimestamp > 0"
     >
-      <p>
+      <p class="ChallengeCard__time">
         {{
           new Date(challenge.endTimestamp * 1000) | moment("from")
         }}
@@ -27,3 +27,10 @@ export default {
   }
 }
 </script>
+<style scoped>
+.ChallengeCard__time {
+  color: grey;
+  margin-top: 5px;
+  font-size: 20px;
+}
+</style>
