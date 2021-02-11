@@ -1,11 +1,9 @@
 <template>
   <div>
     <Navbar />
-    <div class="container">
-      <div class="has-margin-top-1">
+    <v-container>
         <nuxt />
-      </div>
-    </div>
+    </v-container>
   </div>
 </template>
 <script>
