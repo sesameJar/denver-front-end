@@ -1,32 +1,17 @@
 <template>
-  <v-toolbar dark flat>
+  <v-toolbar dark flat >
       <!-- <v-btn icon>
         <v-icon>mdi-magnify</v-icon>
       </v-btn> -->
       <v-spacer></v-spacer>
-      <v-btn
-        to="/"
-        text
-        plain
-        nuxt
-      >
+      <v-btn to="/" text plain nuxt >
         Challenge Me!
       </v-btn>
-      <v-btn
-        text
-        plain
-        outlined
-        nuxt
-        to="/start"
-      >
+      <v-btn text plain outlined nuxt to="/start" >
         Start a Challenge
       </v-btn>
 
-      <v-btn
-        tile
-        plain
-        nuxt
-      >
+      <v-btn tile plain nuxt >
         <connect-btn />
       </v-btn>
 
@@ -34,19 +19,13 @@
 </template>
 <script>
 import ConnectBtn from '@/components/ConnectBtn'
-// import bg from '../assets/photo-1586073055431-5b31161642f7.jpeg'
+
 export default {
   name: 'Navbar',
   components: {
     ConnectBtn
-  },
-  data () {
-    return {
-      // bgImg: `${require('~/assets/photo-1533135091724-62cc5402aa20.jpeg')}`
-    }
   }
 }
 </script>
 <style scoped>
-
 </style>
