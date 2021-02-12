@@ -1,8 +1,8 @@
 <template>
   <div v-if="accountByIdQuery">
     <div class="User__header">
-      <Account :account="$route.params.id" /><br>
-      <p>{{ $route.params.id }}</p>
+      <Account :account="accountId" /><br>
+      <p>{{ accountId }}</p>
       <br><br>
       <p v-if="accountByIdQuery" class="User__description">
         {{ accountByIdQuery.description }}
@@ -44,17 +44,16 @@ export default {
       default: 'Description'
     }
   },
-  // eslint-disable-next-line require-await
-  // async asyncData ({ params }) {
-  //   const accountIdFromURL = params.id // When calling /abc the slug will be "abc"
-  //   return { accountIdFromURL }
-  // },
   data () {
     return {
       pollingStarted: false
     }
   },
-
+  computed: {
+    accountId () {
+      return this.$route.params.id.toLowerCase()
+    }
+  },
   mounted () {
     // call once right away on mount
     getServerTime()
@@ -73,7 +72,7 @@ export default {
       query: ACCOUNT_BY_ID,
       variables () {
         return {
-          id: this.$route.params.id
+          id: this.accountId
         }
       }
       // skip () {

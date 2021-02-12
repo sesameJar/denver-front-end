@@ -1,75 +1,72 @@
 <template>
-  <article>
-    <section v-if="challengeById">
-      <div class="Challenge__header">
-        <div class="Challenge__header-left">
-          <h2>Title</h2>
-
-          <p>We Support: </p>
-          <p>Started By: </p>
-          <Account />
-          <p>Description</p>
-          <p>{{ challenge.description }}</p>
-        </div>
-
-        <div class="Challenge__stats">
-          <span>total funds</span>
-          <span># challenges</span>
-          <br>
-          <span>Time Left</span>
-          <br>
-          <v-btn
-            class="ma-2"
-            outlined
-            color="indigo"
-          >
-            Jump In!
-          </v-btn>
-        </div>
+  <section v-if="challengeByIdQuery">
+    <div class="Challenge__header">
+      <div class="Challenge__header-left">
+        <h2>{{ challengeByIdQuery.title }}</h2>
+        <p>We Support: {{ challengeByIdQuery.beneficiary }} </p>
+        <p>Started By: {{ challengeByIdQuery.creator }} </p>
+        <Account />
+        <p>Description</p>
+        <pre> {{ challengeByIdQuery.description }} </pre>
       </div>
 
-      <br><br>
-      <v-timeline
-        align-top
-        :dense="$vuetify.breakpoint.smAndDown"
-      >
-        <v-timeline-item
-          v-for="(video, i) in challenge.videos"
-          :key="i"
-          fill-dot
+      <div class="Challenge__stats">
+        <span>total funds: {{ challengeByIdQuery.totalFund }} </span>
+        <span># submissions: {{ challengeByIdQuery.videos.length }} </span>
+        <br>
+        <span>Time Left</span>
+        <br>
+        <v-btn
+
+          class="ma-2"
+          outlined
+          color="indigo"
+          style="background:#4edc0c"
         >
-          <VideoPost :video="video" />
-        </v-timeline-item>
-      </v-timeline>
-    </section>
-  </article>
+          Jump In!
+        </v-btn>
+        <v-btn
+          v-if="challengeComplete"
+          style="background:red"
+          @click="endChallenge"
+        >
+          End Challenge
+        </v-btn>
+      </div>
+    </div>
+
+    <br><br>
+    <v-timeline
+      align-top
+      :dense="$vuetify.breakpoint.smAndDown"
+    >
+      <v-timeline-item
+        v-for="(video, i) in challengeByIdQuery.videos"
+        :key="i"
+        fill-dot
+      >
+        <VideoPost :video="video" />
+      </v-timeline-item>
+    </v-timeline>
+  </section>
 </template>
 <script>
-import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
+import { mapActions } from 'vuex'
 import VideoPost from '@/components/VideoPost'
-import { getServerTime } from '@/utils/helpers'
 import Account from '@/components/Account'
-
+import { getServerTime } from '@/utils/helpers'
+import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
 export default {
   components: { VideoPost, Account },
-
-  // eslint-disable-next-line require-await
-  // async asyncData ({ params }) {
-  //   const challengeIdFromURL = params.id // When calling /abc the slug will be "abc"
-  //   return { challengeIdFromURL }
-  // },
-  data () {
-    return {
-      pollingStarted: false
-    }
-  },
+  data: () => ({
+    pollingStarted: false
+  }),
   computed: {
-    challenge () {
-      if (this.challengeQuery && this.challengeQuery.length > 0) {
-        return this.challengeQuery[0]
-      } else {
-        return null
-      }
+    challengeId () {
+      return this.$route.params.id
+    },
+    challengeComplete () {
+      return this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
     }
   },
   mounted () {
@@ -79,24 +76,32 @@ export default {
       getServerTime()
     }, 10000)
     if (!this.pollingStarted) {
-      this.$apollo.queries.accountByIdQuery.startPolling(
+      this.$apollo.queries.challengeByIdQuery.startPolling(
         15000
       )
       this.pollingStarted = true
+    }
+  },
+  methods: {
+    ...mapActions('web3', ['resolveChallenge']),
+    async endChallenge () {
+      try {
+        await this.resolveChallenge({
+          challengeId: this.challengeId
+        })
+        this.$router.push({
+          path: '/'
+        })
+      } catch (error) {
+        console.log(error)
+      }
     }
   },
   apollo: {
     challengeByIdQuery: {
       query: CHALLENGE_BY_ID,
       variables () {
-        return {
-          id: this.$route.params.id
-        }
-      },
-      skip () {
-        return {
-          id: !this.$route.params.id
-        }
+        return { id: this.challengeId }
       }
     }
   }
