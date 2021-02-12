@@ -6,22 +6,22 @@
         <v-divider class="divider" vertical></v-divider>
         <div class="challenge_info level">
             <div class="level_item">
-              <div>
+              <div v-if="challengeCreator">
                 <p class="heading">Started By</p>
-                <Account :accoun="`STARTER ACCOUNT`" />
+                <Account :account="challengeCreator" />
               </div>
 
             </div>
             <div class="level_item">
               <div>
                 <p class="heading">Number of participants</p>
-                <p>3</p>
+                <p>{{numChallengers}}</p>
               </div>
             </div>
             <div class="level_item">
               <div>
                 <p class="heading">Entry Fee</p>
-                <p>0.1 Ξ</p>
+                <p>{{minEntryFee}} Ξ</p>
               </div>
             </div>
         </div>
@@ -45,22 +45,12 @@
       </div>
       <v-divider></v-divider>
       <!-- LATEST VIDEOS     -->
-      <div class="latest_videos">
+      <div class="latest_videos" v-if="challengeById">
         <h3>Latest video in this challenge</h3>
       <v-row>
-        <v-col>
+        <v-col :key="vid.id" v-for="vid in challengeById.videos">
           <v-card flat>
-            <img width="350" src="https://cdn.vuetifyjs.com/images/backgrounds/md.jpg" alt="">
-          </v-card>
-        </v-col>
-        <v-col>
-          <v-card flat>
-            <img width="350" src="https://cdn.vuetifyjs.com/images/backgrounds/md.jpg" alt="">
-          </v-card>
-        </v-col>
-        <v-col>
-          <v-card flat>
-            <img width="350" src="https://cdn.vuetifyjs.com/images/backgrounds/md.jpg" alt="">
+            <VideoPlayer :key="vid.id" :video-data="vid.id" />
           </v-card>
         </v-col>
       </v-row>
@@ -72,19 +62,45 @@
 <script>
 import { mapActions } from 'vuex'
 import Account from '@/components/Account'
-// import VideoPlayer from '@/components/VideoPlayer'
+import VideoPlayer from '@/components/VideoPlayer'
 import { CHALLENGE_BY_ID } from '@/queries/challengeById'
 import ipfsClient from 'ipfs-http-client'
+import { ethers } from 'ethers'
 export default {
   name: 'Join-Challenge',
   components: {
-    Account
+    Account,
+    VideoPlayer
   },
   data () {
     return {
       videoFile: null,
       video: null
     }
+  },
+  computed: {
+    minEntryFee () {
+      if (this.challengeById) {
+        return ethers.utils.formatEther(this.challengeById.minEntryFee)
+      }
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      return null
+    },
+    numChallengers () {
+      if (this.challengeById) {
+        return this.challengeById.numChallengers
+      }
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      return null
+    },
+    challengeCreator () {
+      if (this.challengeById) {
+        return this.challengeById.creator
+      }
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      return null
+    }
+
   },
   watch: {
     videoFile () {
@@ -105,7 +121,7 @@ export default {
         }
         const uploadedFile = await infuraIpfsClient.add(video)
 
-        return uploadedFile.cid.toString()
+        return `https://${INFURA_DOMAIN}/ipfs/${uploadedFile.cid.toString()}`
       } catch (e) {
         console.error('Failed to save asset to IPFS', e)
       }
@@ -117,7 +133,7 @@ export default {
           challengeId: 1,
           invitedAddresses: [],
           ipfsHash: videoCID,
-          donation: 0.1
+          donation: this.minEntryFee
         })
       } catch (e) {
         console.error('ERROR IN JOIN', e)
@@ -131,7 +147,8 @@ export default {
         return {
           id: this.$route.params.id
         }
-      }
+      },
+      pollInterval: 5000
     }
   }
 }
@@ -209,8 +226,8 @@ export default {
   display: block;
 }
 
-.latest_videos {
-  margin-top: 40px;
+.latest_videos h3 {
+  margin: 40px 0;
 }
 
 .JoinChallenge-upload-video {

@@ -2,11 +2,12 @@ query CHALLENGE_BY_ID($id: String!){
   challengeById: challenge(id : $id) {
    	id
     numChallengers
+    creator
     title
     description
     minEntryFee
     totalFund
-    videos(first:3) {
+    videos(first:3, orderBy: uploadTimestamp, orderDirection : desc) {
      	id
       creator {
         id
