@@ -1,5 +1,5 @@
 <template>
-  <video controls><source :src="videoData" type="video/mp4"></video>
+  <video height="300" width="300" controls><source :src="videoData" type="video/mp4"></video>
 </template>
 
 <script>
@@ -11,10 +11,5 @@ export default {
       default: null
     }
   }
-
 }
 </script>
-
-<style>
-
-</style>

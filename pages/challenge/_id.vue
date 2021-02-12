@@ -2,11 +2,16 @@
   <section v-if="challengeByIdQuery">
     <div class="Challenge__header">
       <div class="Challenge__header-left">
-        <h2>{{ challengeByIdQuery.title }}</h2>
-        <p>We Support: {{ challengeByIdQuery.beneficiary }} </p>
-        <p>Started By: {{ challengeByIdQuery.creator }} </p>
-        <Account />
-        <p>Description</p>
+        <h1 class="Challenge__title">
+          Title: {{ challengeByIdQuery.title }}
+        </h1>
+        <br>
+        <p> <strong>We Support:</strong>  {{ challengeByIdQuery.beneficiary }} </p>
+        <br>
+        <p><strong>Started By:</strong> <Account /> <br>{{ challengeByIdQuery.creator }} </p><br>
+        <br>
+
+        <p><strong>Description: </strong></p>
         <pre> {{ challengeByIdQuery.description }} </pre>
       </div>
 
@@ -14,7 +19,7 @@
         <span><strong>Total Funds:</strong> {{ challengeByIdQuery.totalFund }} </span>
         <br>
         <br>
-        <span><strong># Submissions:</strong>{{ challengeByIdQuery.videos.length }} </span>
+        <span><strong># Submissions:</strong> {{ challengeByIdQuery.videos.length }} </span>
         <br>
         <br>
         <span><strong>Time Left:</strong><circular-count-down-timer
@@ -39,11 +44,9 @@
         /></span>
         <br>
         <br>
-        <v-btn
 
-          class="ma-2"
-          outlined
-          color="indigo"
+        <v-btn
+          color="primary"
           style="background:#4edc0c"
         >
           Jump In!
@@ -57,6 +60,8 @@
         </v-btn>
       </div>
     </div>
+    <br>
+    <br>
 
     <br><br>
     <v-timeline
@@ -149,6 +154,9 @@ export default {
 
 </style>
 <style>
+.Challenge__title {
+  font-size: 50px;
+}
 .v-timeline:before {
 margin-left: 50%;
 }
