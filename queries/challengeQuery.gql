@@ -27,6 +27,7 @@ query CHALLENGE_BY_ID($id: String!){
     beneficiary
     minEntryFee
     numChallengers
+    isPublic
     totalFund
     winner
     isActive

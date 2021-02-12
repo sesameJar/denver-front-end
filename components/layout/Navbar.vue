@@ -3,6 +3,7 @@
     <!-- <v-btn icon>
       <v-icon>mdi-magnify</v-icon>
     </v-btn> -->
+
     <v-spacer />
     <v-btn to="/" text plain nuxt>
       Challenge Me!

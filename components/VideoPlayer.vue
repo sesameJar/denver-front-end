@@ -10,6 +10,16 @@ export default {
       type: String,
       default: null
     }
+  },
+  computed: {
+    videoWithIpfsUrl () {
+      if (this.videoData &&
+       !this.videoData.includes('pfs.infura.io') &&
+       !this.videoData.includes('localhost')) {
+        return `https://ipfs.infura.io/ipfs/${this.videoData}`
+      }
+      return this.videoData
+    }
   }
 }
 </script>

@@ -43,13 +43,7 @@
         /></span>
         <br>
         <br>
-
-        <v-btn
-          color="primary"
-          style="background:#4edc0c"
-        >
-          Jump In!
-        </v-btn>
+        <Join :challengeById="challengeByIdQuery" />
         <v-btn
           v-if="challengeComplete"
           style="background:red"
@@ -81,13 +75,14 @@
 import { mapActions } from 'vuex'
 import VideoPost from '@/components/VideoPost'
 import Account from '@/components/Account'
+import Join from '@/components/Join'
 import { getServerTime } from '@/utils/helpers'
 import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
 import CircularCountDownTimer from 'vue-circular-count-down-timer'
 import Vue from 'vue'
 Vue.use(CircularCountDownTimer)
 export default {
-  components: { VideoPost, Account },
+  components: { VideoPost, Account, Join },
   data: () => ({
     pollingStarted: false
   }),

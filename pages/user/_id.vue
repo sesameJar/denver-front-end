@@ -23,9 +23,10 @@
       <v-row>
         <v-col v-for="challenge in accountByIdQuery.challenges" :key="challenge.id" cols="12" md="4">
           <ChallengeCard :challenge="challenge" />
-          <v-btn>
+          <!-- TODO pass prop to select this user; doesn't make sense to have "like" otherwise -->
+          <!-- <v-btn>
             <v-icon>mdi-thumb-up</v-icon> &nbsp; WOW
-          </v-btn>
+          </v-btn> -->
         </v-col>
       </v-row>
     </div>

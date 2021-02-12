@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <v-app>
     <Navbar />
     <v-container>
       <nuxt />
     </v-container>
-  </div>
+  </v-app>
 </template>
 <script>
 import Navbar from '@/components/layout/Navbar'
