@@ -1,6 +1,6 @@
 <template>
   <div
-
+    v-if="video"
     class="VideoPost__container"
     max-width="280"
   >

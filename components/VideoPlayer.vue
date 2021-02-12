@@ -1,5 +1,5 @@
 <template>
-  <video controls autoplay><source :src="videoData" type="video/mp4"></video>
+  <video controls><source :src="videoData" type="video/mp4"></video>
 </template>
 
 <script>

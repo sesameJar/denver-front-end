@@ -54,15 +54,7 @@ export default {
       pollingStarted: false
     }
   },
-  // computed: {
-  //   account () {
-  //     if (this.accountByIdQuery && this.accountByIdQuery.length > 0) {
-  //       return this.accountByIdQuery
-  //     } else {
-  //       return null
-  //     }
-  //   }
-  // },
+
   mounted () {
     // call once right away on mount
     getServerTime()
