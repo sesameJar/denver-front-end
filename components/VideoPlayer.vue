@@ -13,7 +13,7 @@ export default {
   },
   computed: {
     videoWithIpfsUrl () {
-      if (!this.videoData?.includes('pfs.infura.io')) {
+      if (this.videoData && !this.videoData.includes('pfs.infura.io')) {
         return `https://ipfs.infura.io/ipfs/${this.videoData}`
       }
       return this.videoData
