@@ -157,6 +157,13 @@ export default {
         }
         const uploadedMetadata = await infuraIpfsClient.add(metaDataFileStream)
         console.log(uploadedMetadata)
+        console.log(await this.startChallenge({
+          beneficiary: this.selectedCharity.address,
+          invitedAddresses: [],
+          endTimestamp: new Date(this.endDate).getTime() / 1000,
+          minEntryFee: this.minEntryFee,
+          ipfsHash: uploadedMetadata.path
+        }))
         await this.startChallenge({
           beneficiary: this.selectedCharity.address,
           invitedAddresses: [],

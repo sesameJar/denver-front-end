@@ -37,3 +37,23 @@ query SINGLE_CHALLENGE_QUERY($id: String!){
 }
 
 
+query CHALLENGE_BY_ID($id: String!) {
+  challengeByIdQuery: challenges(id: $id) {
+    id
+    creator
+    endTimestamp
+    videos {
+      id
+      creator
+      challenge
+      uploadTimestamp
+    }
+  }
+}
+
+# query gallery($id: String!) {
+#     gallery(id: $id) {
+#       id
+#       artists
+#     }
+#   }

@@ -1,0 +1,95 @@
+<template>
+  <div>
+    <div class="User__header">
+      <Account />
+      <br><br>
+      <p class="User__description">
+        {{ description }}
+        I am MUMU the Challenger. I win and I win and I win. I love green. I love cactus. I love WIN.
+      </p>
+      <table>
+        <tr>
+          <th>{{ accountByIdQuery && accountByIdQuery.totalFund }}</th>
+          <th>{{ numChallenges }}</th>
+        </tr>
+        <tr>
+          <td>Total Funds</td>
+          <td> # Challenges</td>
+        </tr>
+      </table>
+    </div>
+    <br><br><br>
+    <div v-if="accountByIdQuery" class="User__video-cards">
+      <v-row>
+        <v-col v-for="(challenge, index) in accountByIdQuery.challenges" :key="index" cols="12" md="4">
+          <ChallengeCard :challenge="challenge" />
+          <v-btn>
+            <v-icon>mdi-thumb-up</v-icon> WOW
+          </v-btn>
+        </v-col>
+      </v-row>
+    </div>
+  </div>
+</template>
+<script>
+import Account from '@/components/Account'
+import ChallengeCard from '@/components/ChallengeCard'
+import { getServerTime } from '@/utils/helpers'
+import { ACCOUNT_BY_ID } from '@/queries/accountQuery.gql'
+export default {
+  components: { Account, ChallengeCard },
+  props: {
+    description: {
+      type: String,
+      default: 'Description'
+    }
+  },
+  // eslint-disable-next-line require-await
+  async asyncData ({ params }) {
+    const accountIdFromURL = params.id // When calling /abc the slug will be "abc"
+    return { accountIdFromURL }
+  },
+  data () {
+    return {
+      pollingStarted: false
+    }
+  },
+  mounted () {
+    // call once right away on mount
+    getServerTime()
+    window.setInterval(() => {
+      getServerTime()
+    }, 10000)
+    if (!this.pollingStarted) {
+      this.$apollo.queries.accountByIdQuery.startPolling(
+        15000
+      )
+      this.pollingStarted = true
+    }
+  },
+  apollo: {
+    accountByIdQuery: {
+      query: ACCOUNT_BY_ID,
+      variables () {
+        return {
+          id: this.accountIdFromURL
+        }
+      },
+      skip () {
+        return {
+          id: !this.accountIdFromURL
+        }
+      }
+    }
+  }
+}
+</script>
+<style scoped>
+.User__header {
+  display: flex;
+  justify-content: space-between;
+}
+.User__description {
+  width: 30vw;
+}
+</style>

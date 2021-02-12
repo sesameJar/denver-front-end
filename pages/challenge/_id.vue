@@ -7,9 +7,6 @@
         <p>Started By: </p>
         <Account />
         <p>Description</p>
-        <button @click="testIf">
-          challlenge3333
-        </button>
       </div>
 
       <div class="Challenge__stats">
@@ -19,11 +16,20 @@
         <span>Time Left</span>
         <br>
         <v-btn
+
           class="ma-2"
           outlined
           color="indigo"
+          style="background:#4edc0c"
         >
           Jump In!
+        </v-btn>
+        <v-btn
+
+          style="background:red"
+          @click="endChallenge"
+        >
+          End Challenge
         </v-btn>
       </div>
     </div>
@@ -46,6 +52,7 @@
   </section>
 </template>
 <script>
+import { mapActions } from 'vuex'
 import VideoPost from '@/components/VideoPost'
 import Account from '@/components/Account'
 import { SINGLE_CHALLENGE_QUERY } from '@/queries/challengeQuery.gql'
@@ -77,6 +84,23 @@ export default {
         return this.challengeQuery[0]
       } else {
         return null
+      }
+    }
+
+  },
+  methods: {
+    ...mapActions('web3', ['resolveChallenge']),
+    async endChallenge () {
+      try {
+        console.log(await this.resolveChallenge({ id: this.$route.params.id }))
+        await this.resolveChallenge({
+          id: this.$route.params.id
+        })
+        this.$router.push({
+          path: '/'
+        })
+      } catch (error) {
+        console.log(error)
       }
     }
   },
