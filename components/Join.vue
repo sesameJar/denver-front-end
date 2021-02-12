@@ -6,10 +6,11 @@
   >
     <template #activator="{ on, attrs }">
       <v-btn
-        color="primary"
+        large
         dark
         v-bind="attrs"
         v-on="on"
+        style="display:block; margin: 0 auto "
       >
         Jump In!
       </v-btn>
@@ -76,14 +77,12 @@
       <v-card-actions>
         <v-spacer />
         <v-btn
-          large
-          dark
-          v-bind="attrs"
-          v-on="on"
-          style="display:block;margin: 0 auto 20px"
-        >
-          Jump In
-        </v-btn>
+            color="blue-grey darken-4"
+            text
+            @click="dialog = false"
+          >
+            Close
+          </v-btn>
         <v-btn
           color="blue-grey darken-4 white--text"
           flat
