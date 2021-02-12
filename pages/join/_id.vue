@@ -39,16 +39,40 @@
 
         </div>
         </v-file-input>
+        <v-text-field
+            v-if="!isPublic"
+            v-model="newInvitedAddress"
+            label="Invite Others"
+            append-icon="mdi-plus"
+            @click:append="addInvitedAddress"
+          />
+          <div class="invitees" v-if="!isPublic">
+            <v-chip
+              pill
+              v-for="address in invitedAddresses"
+              :key="address"
+              class="address_chip"
+            >
+              <v-avatar left>
+                <v-img
+                  :src="`https://avatars.onflow.org/avatar/${address
+                                .toString()
+                                .toLowerCase()}.svg`">
+                </v-img>
+              </v-avatar>
+              {{toShortAddress(address)}}
+            </v-chip>
+          </div>
         <v-btn @click="jumpInTheChallenge" :disabled="!videoFile">
-          JumpIn!
+          Jump In Now!
         </v-btn>
       </div>
       <v-divider></v-divider>
       <!-- LATEST VIDEOS     -->
-      <div class="latest_videos" v-if="challengeById">
+      <div class="latest_videos" v-if="challengeByIdQuery">
         <h3>Latest video in this challenge</h3>
       <v-row>
-        <v-col :key="vid.id" v-for="vid in challengeById.videos">
+        <v-col :key="vid.id" v-for="vid in challengeByIdQuery.videos">
           <v-card flat>
             <VideoPlayer :key="vid.id" :video-data="vid.id" />
           </v-card>
@@ -63,7 +87,7 @@
 import { mapActions } from 'vuex'
 import Account from '@/components/Account'
 import VideoPlayer from '@/components/VideoPlayer'
-import { CHALLENGE_BY_ID } from '@/queries/challengeById'
+import { CHALLENGE_BY_ID } from '@/queries/challengeQuery'
 import ipfsClient from 'ipfs-http-client'
 import { ethers } from 'ethers'
 export default {
@@ -75,32 +99,51 @@ export default {
   data () {
     return {
       videoFile: null,
-      video: null
+      video: null,
+      invitedAddresses: [],
+      newInvitedAddress: null
     }
   },
   computed: {
     minEntryFee () {
-      if (this.challengeById) {
-        return ethers.utils.formatEther(this.challengeById.minEntryFee)
+      if (this.challengeByIdQuery) {
+        return ethers.utils.formatEther(this.challengeByIdQuery.minEntryFee)
       }
-      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null
     },
     numChallengers () {
-      if (this.challengeById) {
-        return this.challengeById.numChallengers
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.numChallengers
       }
-      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null
     },
     challengeCreator () {
-      if (this.challengeById) {
-        return this.challengeById.creator
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.creator
       }
-      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null
+    },
+    isValidAddress () {
+      if (!this.newInvitedAddress) {
+        return false
+      }
+      try {
+        ethers.utils.getAddress(this.newInvitedAddress)
+        return true
+      } catch (e) {
+        return false
+      }
+    },
+    isPublic () {
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.isPublic
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return false
     }
-
   },
   watch: {
     videoFile () {
@@ -131,17 +174,26 @@ export default {
         const videoCID = await this.pinToIPFS()
         await this.jumpIn({
           challengeId: 1,
-          invitedAddresses: [],
+          invitedAddresses: this.invitedAddresses,
           ipfsHash: videoCID,
           donation: this.minEntryFee
         })
       } catch (e) {
         console.error('ERROR IN JOIN', e)
       }
+    },
+    addInvitedAddress () {
+      if (this.isValidAddress && !this.invitedAddresses.includes(this.newInvitedAddress)) {
+        this.invitedAddresses.push(this.newInvitedAddress)
+        this.newInvitedAddress = ''
+      }
+    },
+    toShortAddress (val) {
+      return val && val.startsWith('0x') ? val.substr(0, 6) + '...' + val.substr(val.length - 6, val.length) : val
     }
   },
   apollo: {
-    challengeById: {
+    challengeByIdQuery: {
       query: CHALLENGE_BY_ID,
       variables () {
         return {
@@ -224,6 +276,16 @@ export default {
   z-index: 0;
   opacity: 0;
   display: block;
+}
+
+.invitees {
+  margin-bottom: 20px;
+}
+
+/deep/ .invitees .address_chip {
+  height: 38px;
+  margin-right: 5px;
+  border-radius: 100px;
 }
 
 .latest_videos h3 {
