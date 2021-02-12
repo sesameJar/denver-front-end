@@ -115,6 +115,7 @@ export const actions = {
   jumpIn (vuexStore, params) {
     const { state } = vuexStore
     const { challengeId, invitedAddresses, ipfsHash, donation } = params
+    // const challengeIdBN = ethers.utils.bigNumberify(challengeId)
     const ethValue = { value: ethers.utils.parseEther(donation.toString()) }
     return state.starRelayContract
       .jumpIn(
