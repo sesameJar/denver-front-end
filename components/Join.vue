@@ -76,11 +76,13 @@
       <v-card-actions>
         <v-spacer />
         <v-btn
-          color="blue-grey darken-4"
-          text
-          @click="dialog = false"
+          large
+          dark
+          v-bind="attrs"
+          v-on="on"
+          style="display:block;margin: 0 auto 20px"
         >
-          Close
+          Jump In
         </v-btn>
         <v-btn
           color="blue-grey darken-4 white--text"

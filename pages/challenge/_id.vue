@@ -1,48 +1,66 @@
 <template>
   <section v-if="challengeByIdQuery">
-    <div class="Challenge__header">
-      <div class="Challenge__header-left">
-        <h1 class="Challenge__title">
-          Title: {{ challengeByIdQuery.title }}
-        </h1>
-        <br>
-        <p> <strong>We Support:</strong>  {{ challengeByIdQuery.beneficiary }} </p>
-        <br>
-        <p><strong>Started By:</strong> <Account :account="challengeByIdQuery.creator" /> </p>
-        <br>
-        <p><strong>Description: </strong></p>
-        <pre> {{ challengeByIdQuery.description }} </pre>
+      <div class="challenge_container">
+        <h2 class="mb-3">{{challengeByIdQuery && challengeByIdQuery.title}}</h2>
+        <v-divider class="divider" vertical></v-divider>
+        <div class="challenge_info level">
+          <div class="level_item">
+              <div>
+                <p class="heading">Time Left</p>
+                <p>
+                  <circular-count-down-timer
+                    :initial-value="timeRemaining"
+                    :stroke-width="3"
+                    :seconds-stroke-color="'rgb(55,97,20)'"
+                    :minutes-stroke-color="'rgb(55,97,20)'"
+                    :hours-stroke-color="'rgb(55,97,20)'"
+                    :underneath-stroke-color="'#777'"
+                    :seconds-fill-color="'#444'"
+                    :minutes-fill-color="'#444'"
+                    :hours-fill-color="'#444'"
+                    :size="60"
+                    :padding="4"
+                    :hour-label="'HOURS'"
+                    :minute-label="'MINUTES'"
+                    :second-label="'SECONDS'"
+                    :show-second="true"
+                    :show-minute="true"
+                    :show-hour="true"
+                    style="text-align:center; color:#bbb"
+                  />
+                </p>
+              </div>
+            </div>
+            <div class="level_item">
+              <div v-if="challengeCreator">
+                <p class="heading">Started By</p>
+                <Account :account="challengeCreator" />
+              </div>
+
+            </div>
+            <div class="level_item">
+              <div>
+                <p class="heading">Videos</p>
+                <p>{{numChallengers}}</p>
+              </div>
+            </div>
+            <div class="level_item">
+              <div>
+                <p class="heading">Entry Fee</p>
+                <p>{{minEntryFee}} Ξ</p>
+              </div>
+            </div>
+            <div class="level_item">
+              <div>
+                <p class="heading">Total funds</p>
+                <p>{{TotalFundsRaised}} Ξ</p>
+              </div>
+            </div>
+
+        </div>
       </div>
 
       <div class="Challenge__stats">
-        <span><strong>Total Funds:</strong> {{ challengeByIdQuery.totalFund }} </span>
-        <br>
-        <br>
-        <span><strong># Submissions:</strong> {{ challengeByIdQuery.videos.length }} </span>
-        <br>
-        <br>
-        <span><strong>Time Left:</strong><circular-count-down-timer
-          :initial-value="timeRemaining"
-          :stroke-width="5"
-          :seconds-stroke-color="'darkblue'"
-          :minutes-stroke-color="'darkblue'"
-          :hours-stroke-color="'darkblue'"
-          :underneath-stroke-color="'lightgrey'"
-          :seconds-fill-color="'#efecec'"
-          :minutes-fill-color="'#efecec'"
-          :hours-fill-color="'#efecec'"
-          :size="150"
-          :padding="4"
-          :hour-label="'hours'"
-          :minute-label="'minutes'"
-          :second-label="'seconds'"
-          :show-second="true"
-          :show-minute="true"
-          :show-hour="true"
-          style="text-align:center; color:black"
-        /></span>
-        <br>
-        <br>
         <Join :challengeById="challengeByIdQuery" />
         <v-btn
           v-if="challengeComplete"
@@ -52,11 +70,6 @@
           End Challenge
         </v-btn>
       </div>
-    </div>
-    <br>
-    <br>
-
-    <br><br>
     <v-timeline
       align-top
       :dense="$vuetify.breakpoint.smAndDown"
@@ -73,15 +86,21 @@
 </template>
 <script>
 import { mapActions } from 'vuex'
+import { ethers } from 'ethers'
+import CircularCountDownTimer from 'vue-circular-count-down-timer'
+
 import VideoPost from '@/components/VideoPost'
 import Account from '@/components/Account'
 import Join from '@/components/Join'
+
 import { getServerTime } from '@/utils/helpers'
 import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
-import CircularCountDownTimer from 'vue-circular-count-down-timer'
+
 import Vue from 'vue'
 Vue.use(CircularCountDownTimer)
+
 export default {
+  name: 'Challenge-Page',
   components: { VideoPost, Account, Join },
   data: () => ({
     pollingStarted: false
@@ -91,7 +110,7 @@ export default {
       return this.$route.params.id
     },
     challengeComplete () {
-      return this.challengeByIdQuery && this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
+      return this.challengeByIdQuery && Number(this.challengeByIdQuery.endTimestamp) * 1000 <= Date.now()
     },
     timeRemaining () {
       if (this.challengeByIdQuery.endTimestamp - this.challengeByIdQuery.startTimestamp < 0) {
@@ -99,6 +118,52 @@ export default {
       } else {
         return this.challengeByIdQuery.endTimestamp - this.challengeByIdQuery.startTimestamp
       }
+    },
+    minEntryFee () {
+      if (this.challengeByIdQuery) {
+        return ethers.utils.formatEther(this.challengeByIdQuery.minEntryFee)
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return null
+    },
+    TotalFundsRaised () {
+      if (this.challengeByIdQuery) {
+        return ethers.utils.formatEther(this.challengeByIdQuery.totalFund)
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return null
+    },
+    numChallengers () {
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.numChallengers
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return null
+    },
+    challengeCreator () {
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.creator
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return null
+    },
+    isValidAddress () {
+      if (!this.newInvitedAddress) {
+        return false
+      }
+      try {
+        ethers.utils.getAddress(this.newInvitedAddress)
+        return true
+      } catch (e) {
+        return false
+      }
+    },
+    isPublic () {
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.isPublic
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return false
     }
   },
   mounted () {
@@ -141,22 +206,50 @@ export default {
 </script>
 
 <style scoped>
-.Challenge__header {
+.challenge_container {
+  padding : 30px 0;
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  justify-content: space-around;
 }
 
-</style>
-<style>
-.Challenge__title {
-  font-size: 50px;
+.challenge_container h2 {
+  display: flex;
 }
-.v-timeline:before {
-margin-left: 50%;
+
+.challenge_container.divider {
+  display: flex;
 }
-</style>
-<style>
-.v-btn:not(.v-btn--round).v-size--default {
-  margin-bottom: 5px;
+
+.challenge_container .challenge_info.level {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.challenge_container .challenge_info.level > .level_item {
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  justify-content: center;
+  justify-items: center;
+  margin-right: 25px;
+}
+
+.challenge_container .challenge_info.level > .level_item p {
+  text-align: center;
+  display: block;
+  font-weight: bolder;
+}
+
+.challenge_container .challenge_info.level > .level_item p.heading {
+  display: block;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    font-family: Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    color: #999;
 }
 </style>
