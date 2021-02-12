@@ -7,12 +7,13 @@
     >
       <template v-slot:activator="{ on, attrs }">
         <v-btn
-          color="primary"
+          large
           dark
           v-bind="attrs"
           v-on="on"
+          style="display:block;margin: 0 auto 20px"
         >
-          Open Dialog
+          Jump In
         </v-btn>
       </template>
       <v-card>

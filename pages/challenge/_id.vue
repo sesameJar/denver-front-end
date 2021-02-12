@@ -4,6 +4,33 @@
         <h2 class="mb-3">{{challengeByIdQuery && challengeByIdQuery.title}}</h2>
         <v-divider class="divider" vertical></v-divider>
         <div class="challenge_info level">
+          <div class="level_item">
+              <div>
+                <p class="heading">Time Left</p>
+                <p>
+                  <circular-count-down-timer
+                    :initial-value="timeRemaining"
+                    :stroke-width="3"
+                    :seconds-stroke-color="'rgb(55,97,20)'"
+                    :minutes-stroke-color="'rgb(55,97,20)'"
+                    :hours-stroke-color="'rgb(55,97,20)'"
+                    :underneath-stroke-color="'#777'"
+                    :seconds-fill-color="'#444'"
+                    :minutes-fill-color="'#444'"
+                    :hours-fill-color="'#444'"
+                    :size="60"
+                    :padding="4"
+                    :hour-label="'HOURS'"
+                    :minute-label="'MINUTES'"
+                    :second-label="'SECONDS'"
+                    :show-second="true"
+                    :show-minute="true"
+                    :show-hour="true"
+                    style="text-align:center; color:#bbb"
+                  />
+                </p>
+              </div>
+            </div>
             <div class="level_item">
               <div v-if="challengeCreator">
                 <p class="heading">Started By</p>
@@ -13,7 +40,7 @@
             </div>
             <div class="level_item">
               <div>
-                <p class="heading">Number of participants</p>
+                <p class="heading">Videos</p>
                 <p>{{numChallengers}}</p>
               </div>
             </div>
@@ -23,38 +50,17 @@
                 <p>{{minEntryFee}} Ξ</p>
               </div>
             </div>
+            <div class="level_item">
+              <div>
+                <p class="heading">Total funds</p>
+                <p>{{TotalFundsRaised}} Ξ</p>
+              </div>
+            </div>
+
         </div>
       </div>
 
       <div class="Challenge__stats">
-        <span><strong>Total Funds:</strong> {{ challengeByIdQuery.totalFund }} </span>
-        <br>
-        <br>
-        <span><strong># Submissions:</strong> {{ challengeByIdQuery.videos.length }} </span>
-        <br>
-        <br>
-        <span><strong>Time Left:</strong><circular-count-down-timer
-          :initial-value="timeRemaining"
-          :stroke-width="2"
-          :seconds-stroke-color="'darkblue'"
-          :minutes-stroke-color="'darkblue'"
-          :hours-stroke-color="'darkblue'"
-          :underneath-stroke-color="'lightgrey'"
-          :seconds-fill-color="'#efecec'"
-          :minutes-fill-color="'#efecec'"
-          :hours-fill-color="'#efecec'"
-          :size="70"
-          :padding="4"
-          :hour-label="'hours'"
-          :minute-label="'minutes'"
-          :second-label="'seconds'"
-          :show-second="true"
-          :show-minute="true"
-          :show-hour="true"
-          style="text-align:center; color:black"
-        /></span>
-        <br>
-        <br>
         <Join :challengeById="challengeByIdQuery" />
         <v-btn
           v-if="challengeComplete"
@@ -104,7 +110,7 @@ export default {
       return this.$route.params.id
     },
     challengeComplete () {
-      return this.challengeByIdQuery && this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
+      return this.challengeByIdQuery && Number(this.challengeByIdQuery.endTimestamp) * 1000 <= Date.now()
     },
     timeRemaining () {
       if (this.challengeByIdQuery.endTimestamp - this.challengeByIdQuery.startTimestamp < 0) {
@@ -116,6 +122,13 @@ export default {
     minEntryFee () {
       if (this.challengeByIdQuery) {
         return ethers.utils.formatEther(this.challengeByIdQuery.minEntryFee)
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return null
+    },
+    TotalFundsRaised () {
+      if (this.challengeByIdQuery) {
+        return ethers.utils.formatEther(this.challengeByIdQuery.totalFund)
       }
       // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null

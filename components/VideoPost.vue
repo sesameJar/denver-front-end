@@ -21,13 +21,13 @@
       <div>
         <v-btn
           outlined
-          color="indigo"
+          color="primary"
         >
           Share
         </v-btn>
         <v-btn
           outlined
-          color="indigo"
+          color="primary"
         >
           <v-icon>mdi-thumb-up</v-icon> &nbsp; WOW
         </v-btn>
