@@ -1,103 +1,97 @@
 <template>
-
   <v-dialog
-      v-model="dialog"
-      persistent
-      max-width="600px"
-    >
-      <template v-slot:activator="{ on, attrs }">
+    v-model="dialog"
+    persistent
+    max-width="600px"
+  >
+    <template #activator="{ on, attrs }">
+      <v-btn
+        color="primary"
+        dark
+        v-bind="attrs"
+        v-on="on"
+      >
+        Jump In!
+      </v-btn>
+    </template>
+    <v-card>
+      <v-card-title>
+        <span class="headline">Jump In Challenge <span style="text-decoration:underline">{{challengeById && challengeById.title}}</span></span>
+      </v-card-title>
+      <v-card-text>
+        <v-container>
+          <v-row>
+            <v-col
+              v-if="!isUploadedVideo"
+              cols="12"
+              sm="12"
+            >
+              <v-file-input
+                v-model="videoFile"
+                accept="video/*"
+                class="file_input"
+                placeholder="Choose a video"
+              />
+            </v-col>
+            <v-col
+              v-else
+              cols="12"
+              sm="12"
+            >
+              <VideoPlayer
+                :key="video"
+                style="max-height:450px;max-width:550px; margin:0 auto"
+                :video-data="video"
+              />
+            </v-col>
+            <v-col cols="12">
+              <v-text-field
+                v-if="!isPublic"
+                v-model="newInvitedAddress"
+                label="Invite Others"
+                append-icon="mdi-plus"
+                @click:append="addInvitedAddress"
+              />
+            </v-col>
+            <v-col v-if="!isPublic && invitedAddresses.length" cols="12" class="invitees">
+              <v-chip
+                v-for="address in invitedAddresses"
+                :key="address"
+                pill
+                class="address_chip px-4"
+              >
+                <v-avatar left>
+                  <v-img
+                    :src="`https://avatars.onflow.org/avatar/${address
+                      .toString()
+                      .toLowerCase()}.svg`"
+                  />
+                </v-avatar>
+                {{ toShortAddress(address) }}
+              </v-chip>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer />
         <v-btn
-          color="primary"
-          dark
-          v-bind="attrs"
-          v-on="on"
+          color="blue-grey darken-4"
+          text
+          @click="dialog = false"
         >
-          Open Dialog
+          Close
         </v-btn>
-      </template>
-      <v-card>
-        <v-card-title>
-          <span class="headline">Jump In Challenge <span style="text-decoration:underline">{{challengeById && challengeById.title}}</span></span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col
-                cols="12"
-                sm="12"
-                v-if="!isUploadedVideo"
-              >
-                <v-file-input
-                  v-model="videoFile"
-                  accept="video/*"
-                  class="file_input"
-                  placeholder="Choose a video"
-                >
-                </v-file-input>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="12"
-                v-else
-              >
-
-                <VideoPlayer
-                  :key="video"
-                  style="max-height:450px;max-width:550px; margin:0 auto"
-                  :video-data="video"
-                />
-
-              </v-col>
-
-              <v-col cols="12">
-               <v-text-field
-                  v-if="!isPublic"
-                  v-model="newInvitedAddress"
-                  label="Invite Others"
-                  append-icon="mdi-plus"
-                  @click:append="addInvitedAddress"
-                />
-              </v-col>
-              <v-col cols="12" class="invitees" v-if="!isPublic && invitedAddresses.length">
-                <v-chip
-                  pill
-                  v-for="address in invitedAddresses"
-                  :key="address"
-                  class="address_chip px-4"
-                >
-                  <v-avatar left>
-                    <v-img
-                      :src="`https://avatars.onflow.org/avatar/${address
-                                    .toString()
-                                    .toLowerCase()}.svg`">
-                    </v-img>
-                  </v-avatar>
-                  {{toShortAddress(address)}}
-                </v-chip>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="blue-grey darken-4"
-            text
-            @click="dialog = false"
-          >
-            Close
-          </v-btn>
-          <v-btn
-            color="blue-grey darken-4 white--text"
-            flat
-            @click="jumpInTheChallenge();"
-          >
-            Save
-          </v-btn>
-        </v-card-actions>
-      </v-card>
+        <v-btn
+          color="blue-grey darken-4 white--text"
+          flat
+          @click="jumpInTheChallenge();"
+        >
+          Save
+        </v-btn>
+      </v-card-actions>
+    </v-card>
   </v-dialog>
-
 </template>
 
 <script>
@@ -106,7 +100,7 @@ import VideoPlayer from '@/components/VideoPlayer'
 import ipfsClient from 'ipfs-http-client'
 import { ethers } from 'ethers'
 export default {
-  name: 'Join-Challenge',
+  name: 'JoinChallenge',
   components: {
     VideoPlayer
   },
