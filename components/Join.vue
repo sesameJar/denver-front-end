@@ -17,7 +17,7 @@
       </template>
       <v-card>
         <v-card-title>
-          <span class="headline">Jump In Challenge <span style="text-decoration:underline">{{challengeByIdQuery && challengeByIdQuery.title}}</span></span>
+          <span class="headline">Jump In Challenge <span style="text-decoration:underline">{{challengeById && challengeById.title}}</span></span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -90,7 +90,7 @@
           <v-btn
             color="blue-grey darken-4 white--text"
             flat
-            @click="dialog = false"
+            @click="jumpInTheChallenge();"
           >
             Save
           </v-btn>
@@ -111,7 +111,7 @@ export default {
     VideoPlayer
   },
   props: {
-    challengeByIdQuery: {
+    challengeById: {
       type: Object,
       default: null
     }
@@ -128,24 +128,24 @@ export default {
   },
   computed: {
     minEntryFee () {
-      if (this.challengeByIdQuery) {
-        return ethers.utils.formatEther(this.challengeByIdQuery.minEntryFee)
+      if (this.challengeById) {
+        return ethers.utils.formatEther(this.challengeById.minEntryFee)
       }
-      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
       return null
     },
     numChallengers () {
-      if (this.challengeByIdQuery) {
-        return this.challengeByIdQuery.numChallengers
+      if (this.challengeById) {
+        return this.challengeById.numChallengers
       }
-      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
       return null
     },
     challengeCreator () {
-      if (this.challengeByIdQuery) {
-        return this.challengeByIdQuery.creator
+      if (this.challengeById) {
+        return this.challengeById.creator
       }
-      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
       return null
     },
     isValidAddress () {
@@ -160,10 +160,10 @@ export default {
       }
     },
     isPublic () {
-      if (this.challengeByIdQuery) {
-        return this.challengeByIdQuery.isPublic
+      if (this.challengeById) {
+        return this.challengeById.isPublic
       }
-      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
       return false
     }
   },
@@ -194,12 +194,15 @@ export default {
     async jumpInTheChallenge () {
       try {
         const videoCID = await this.pinToIPFS()
-        await this.jumpIn({
+        const result = await this.jumpIn({
           challengeId: 1,
           invitedAddresses: this.invitedAddresses,
           ipfsHash: videoCID,
           donation: this.minEntryFee
         })
+        if (result.status === 'SUCCESS') {
+          this.dialog = false
+        }
       } catch (e) {
         console.error('ERROR IN JOIN', e)
       }
@@ -215,7 +218,7 @@ export default {
     }
   }
   // apollo: {
-  //   challengeByIdQuery: {
+  //   challengeById: {
   //     query: CHALLENGE_BY_ID,
   //     variables () {
   //       return {

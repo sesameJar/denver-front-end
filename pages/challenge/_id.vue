@@ -16,15 +16,7 @@
         <br>
         <span>Time Left</span>
         <br>
-        <v-btn
-
-          class="ma-2"
-          outlined
-          color="indigo"
-          style="background:#4edc0c"
-        >
-          Jump In!
-        </v-btn>
+        <Join :challengeById="challengeByIdQuery" />
         <v-btn
           v-if="challengeComplete"
           style="background:red"
@@ -54,10 +46,12 @@
 import { mapActions } from 'vuex'
 import VideoPost from '@/components/VideoPost'
 import Account from '@/components/Account'
+import Join from '@/components/Join'
 import { getServerTime } from '@/utils/helpers'
 import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
+
 export default {
-  components: { VideoPost, Account },
+  components: { VideoPost, Account, Join },
   data: () => ({
     pollingStarted: false
   }),

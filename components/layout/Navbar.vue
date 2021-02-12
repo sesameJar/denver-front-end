@@ -3,7 +3,7 @@
     <!-- <v-btn icon>
       <v-icon>mdi-magnify</v-icon>
     </v-btn> -->
-    <join />
+
     <v-spacer />
     <v-btn to="/" text plain nuxt>
       Challenge Me!
@@ -19,12 +19,11 @@
 </template>
 <script>
 import ConnectBtn from '@/components/ConnectBtn'
-import Join from '@/components/Join'
+
 export default {
   name: 'Navbar',
   components: {
-    ConnectBtn,
-    Join
+    ConnectBtn
   }
 }
 </script>
