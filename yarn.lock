@@ -13291,6 +13291,14 @@
     "serialize-javascript" "^4.0.0"
     "throttle-debounce" "^2.1.0"
 
+"vue-circular-count-down-timer@^1.0.4":
+  "integrity" "sha512-qOk89O9SyYO3xaXcPEbZ1HhSZcLHkn2U97axlJyLh4alfc5dDYQrfXIJ77s45Z8d6vF4NVslJIpGO3Wln5RB2Q=="
+  "resolved" "https://registry.npmjs.org/vue-circular-count-down-timer/-/vue-circular-count-down-timer-1.0.4.tgz"
+  "version" "1.0.4"
+  dependencies:
+    "core-js" "^2.6.5"
+    "vue" "^2.6.10"
+
 "vue-cli-plugin-apollo@^0.22.2":
   "integrity" "sha512-HatlgKTChTnaSFTU2rdYDlL6Ui8t8Lzl9aqWiEd4vpbylZA/OlMFSbuNH33UoIgyJl783yo1WFod7FqNTj2zsg=="
   "resolved" "https://registry.npmjs.org/vue-cli-plugin-apollo/-/vue-cli-plugin-apollo-0.22.2.tgz"
@@ -13425,7 +13433,7 @@
   "resolved" "https://registry.npmjs.org/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.9.1.tgz"
   "version" "1.9.1"
 
-"vue@^2.6.12":
+"vue@^2.6.10", "vue@^2.6.12":
   "integrity" "sha512-uhmLFETqPPNyuLLbsKz6ioJ4q7AZHzD8ZVFNATNyICSZouqP2Sz0rotWQC8UNBF6VGSCs5abnKJoStA6JbCbfg=="
   "resolved" "https://registry.npmjs.org/vue/-/vue-2.6.12.tgz"
   "version" "2.6.12"

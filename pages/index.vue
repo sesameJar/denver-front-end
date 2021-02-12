@@ -37,7 +37,7 @@
           cols="12"
           md="4"
         >
-          <ChallengeCard :challenge="challenge" />
+          <ChallengeCard class="Home__ChallengeCard" :challenge="challenge" />
         </v-col>
       </v-row>
     </div>

@@ -1,18 +1,20 @@
 <template>
   <div v-if="challenge">
-    <VideoPlayer
-      :video-data="challenge.videos && challenge.videos.length && challenge.videos[0].id"
-    />
-    <h3> {{ challenge.title }} </h3>
-    <div
-      v-if="challenge.endTimestamp > 0"
-    >
-      <p class="ChallengeCard__time">
-        {{
-          new Date(challenge.endTimestamp * 1000) | moment("from")
-        }}
-      </p>
-    </div>
+    <nuxt-link :to="`/challenge/${challenge.id}`">
+      <VideoPlayer
+        :video-data="challenge.videos && challenge.videos.length && challenge.videos[0].id"
+      />
+      <h3> {{ challenge.title }} </h3>
+      <div
+        v-if="challenge.endTimestamp > 0"
+      >
+        <p class="ChallengeCard__time">
+          {{
+            new Date(challenge.endTimestamp * 1000) | moment("from")
+          }}
+        </p>
+      </div>
+    </nuxt-link>
   </div>
 </template>
 <script>
