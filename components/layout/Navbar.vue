@@ -1,9 +1,5 @@
 <template>
   <v-toolbar dark flat>
-    <!-- <v-btn icon>
-      <v-icon>mdi-magnify</v-icon>
-    </v-btn> -->
-
     <v-spacer />
     <v-btn to="/" text plain nuxt>
       Challenge Me!
@@ -26,5 +22,3 @@ export default {
   }
 }
 </script>
-<style scoped>
-</style>
