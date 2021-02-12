@@ -8,9 +8,8 @@
         <br>
         <p> <strong>We Support:</strong>  {{ challengeByIdQuery.beneficiary }} </p>
         <br>
-        <p><strong>Started By:</strong> <Account /> <br>{{ challengeByIdQuery.creator }} </p><br>
+        <p><strong>Started By:</strong> <Account :account="challengeByIdQuery.creator" /> </p>
         <br>
-
         <p><strong>Description: </strong></p>
         <pre> {{ challengeByIdQuery.description }} </pre>
       </div>
@@ -97,7 +96,7 @@ export default {
       return this.$route.params.id
     },
     challengeComplete () {
-      return this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
+      return this.challengeByIdQuery && this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
     },
     timeRemaining () {
       if (this.challengeByIdQuery.endTimestamp - this.challengeByIdQuery.startTimestamp < 0) {

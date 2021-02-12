@@ -45,7 +45,6 @@
 </template>
 <script>
 import ChallengeCard from '@/components/ChallengeCard'
-// import VideoPost from '@/components/VideoPost'
 import { CONTRACT_QUERY } from '@/queries/contractQuery.gql'
 import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
 import { getServerTime } from '@/utils/helpers'

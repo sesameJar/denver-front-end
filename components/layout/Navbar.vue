@@ -10,7 +10,6 @@
     <v-btn text plain outlined nuxt to="/start">
       Start a Challenge
     </v-btn>
-
     <v-btn tile plain nuxt>
       <connect-btn />
     </v-btn>
