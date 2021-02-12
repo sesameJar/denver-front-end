@@ -12,7 +12,7 @@
             />
           </div>
         </v-col>
-        <v-col v-else class="pa-4" style="border:1px dashed #999">
+        <v-col v-else>
           <VideoPlayer
             :key="video"
             style="max-width:450px;max-height:450px;margin:0 auto"
@@ -21,7 +21,7 @@
         </v-col>
       </v-row>
     </v-col>
-      <v-col cols="12" sm="6">
+      <v-col cols="12" sm="6" class="pt-0">
         <v-row>
           <v-col
             cols="12"
@@ -110,7 +110,7 @@
           </v-col>
 
           <v-col cols="12" sm="12">
-            <v-btn @click="pushToIpfs">
+            <v-btn @click="pushToIpfs" :disabled="!video">
               Submit Challenge
             </v-btn>
           </v-col>
