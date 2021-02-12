@@ -20,9 +20,9 @@
         <span><strong>Time Left:</strong><circular-count-down-timer
           :initial-value="timeRemaining"
           :stroke-width="5"
-          :seconds-stroke-color="'#0f0'"
-          :minutes-stroke-color="'#0f0'"
-          :hours-stroke-color="'#0f0'"
+          :seconds-stroke-color="'darkblue'"
+          :minutes-stroke-color="'darkblue'"
+          :hours-stroke-color="'darkblue'"
           :underneath-stroke-color="'lightgrey'"
           :seconds-fill-color="'#efecec'"
           :minutes-fill-color="'#efecec'"
