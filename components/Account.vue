@@ -1,5 +1,5 @@
 <template>
-  <v-btn tile plain to="user" class="active Account__container">
+  <v-btn tile plain :to="`/user/${account}`" class="active Account__container">
     <v-avatar color="indigo">
       <img
         :src="`https://avatars.onflow.org/avatar/${account

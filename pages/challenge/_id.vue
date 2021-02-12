@@ -66,7 +66,7 @@ export default {
       return this.$route.params.id
     },
     challengeComplete () {
-      return this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
+      return this.challengeByIdQuery && this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
     }
   },
   mounted () {

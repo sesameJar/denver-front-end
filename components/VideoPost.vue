@@ -1,28 +1,39 @@
 <template>
-  <div
+  <v-card
     v-if="video"
-    class="VideoPost__container"
     max-width="280"
+    elevation="2"
   >
-    <div class="VideoPost__description">
-      <Account />
-      <v-btn
-        outlined
-        color="indigo"
-      >
-        Share
-      </v-btn><br>
-      <v-btn
-        outlined
-        color="indigo"
-      >
-        <v-icon>mdi-thumb-up</v-icon> WOW
-      </v-btn>
+    <v-card-title>
+      <Account :account="video.creator.id" />
+    </v-card-title>
+    <v-card-subtitle>
+      {{
+        new Date(video.uploadTimestamp * 1000) | moment("from")
+      }}
+    </v-card-subtitle>
+    <v-card-text>
       <VideoPlayer
         :video-data="video.id"
       />
-    </div>
-  </div>
+    </v-card-text>
+    <v-card-actions class="VideoPost__actions">
+      <div>
+        <v-btn
+          outlined
+          color="indigo"
+        >
+          Share
+        </v-btn>
+        <v-btn
+          outlined
+          color="indigo"
+        >
+          <v-icon>mdi-thumb-up</v-icon> &nbsp; WOW
+        </v-btn>
+      </div>
+    </v-card-actions>
+  </v-card>
 </template>
 <script>
 import Account from '@/components/Account'
@@ -35,7 +46,6 @@ export default {
       type: Object,
       default: null
     },
-
     video: {
       type: Object,
       default: null
@@ -47,10 +57,9 @@ export default {
 }
 </script>
 <style>
-.VideoPost__container {
+.VideoPost__actions {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  justify-content: space-evenly;
 }
 
 </style>

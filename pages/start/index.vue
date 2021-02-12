@@ -1,5 +1,17 @@
 <template>
   <div>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      color="rgb(0,255,055,0.8)"
+      dark
+      centered
+      rounded="pill"
+      top
+      multi-line
+    >
+      Please Connect Your Web3 Wallet First!
+    </v-snackbar>
     <div class="ChallengeCreation-upload-video">
       <div v-if="!isUploadedVideo" class="ChallengeCreation-video-upload-container" style="margin-bottom:25px">
         <div style="justify-content:center">
@@ -85,7 +97,7 @@
         <br>
         <v-row style="justify-content:center">
           <v-btn @click="pushToIpfs">
-            Submit Challenge
+            Start the Challenge!
           </v-btn>
         </v-row>
       </v-col>
@@ -94,7 +106,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import VideoPlayer from '@/components/VideoPlayer'
 import ipfsClient from 'ipfs-http-client'
 import { CHARITY_LIST } from '@/utils/constants'
@@ -103,10 +115,10 @@ export default {
   name: 'Start',
   components: {
     VideoPlayer
-
   },
   data () {
     return {
+      snackbar: false,
       endDate: null,
       challengeName: '',
       challengeDescription: '',
@@ -118,6 +130,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('web3', ['account']),
     minEntryFee () {
       return parseFloat(this.minEntryFeeInput).toFixed(3)
     }
@@ -135,6 +148,10 @@ export default {
   methods: {
     ...mapActions('web3', ['startChallenge']),
     async pushToIpfs () {
+      if (!this.account) {
+        this.snackbar = true
+        return
+      }
       const INFURA_DOMAIN = 'ipfs.infura.io'
       const INFURA_PORT = '5001'
       const infuraIpfsClient = ipfsClient({ host: INFURA_DOMAIN, port: INFURA_PORT, protocol: 'https' })
