@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-btn tile plain to="user" class="active Account__container">
     <v-avatar color="indigo">
       <img
       :src="`https://avatars.onflow.org/avatar/${account
@@ -7,8 +7,7 @@
                                 .toLowerCase()}.svg`"
                     alt="">
     </v-avatar>
-    <br>
-  </div>
+  </v-btn>
 </template>
 <script>
 export default {
@@ -20,7 +19,15 @@ export default {
   }
 }
 </script>
-<style>
+<style scoped>
+.Account__container {
+  display: block;
+  opacity: 1;
+}
+
+/deep/ .Account__container > .v-btn__content {
+  opacity: 1;
+}
 .Account__description {
   width: 30vw;
 }
