@@ -1,5 +1,5 @@
 <template>
-  <video height="300" width="300" controls><source :src="videoWithIpfsUrl" type="video/mp4"></video>
+  <video class="VideoPlayer__video" controls><source :src="videoData" type="video/mp4"></video>
 </template>
 
 <script>
@@ -24,8 +24,9 @@ export default {
 }
 </script>
 
-<style scoped>
-  video {
-    display: block;
-  }
+<style>
+.VideoPlayer__video {
+  max-width: 100%;
+  height: auto;
+}
 </style>

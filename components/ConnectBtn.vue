@@ -17,9 +17,6 @@ export default {
   computed: {
     ...mapState('web3', ['account'])
   },
-  async mounted () {
-
-  },
   methods: {
     ...mapActions('web3', ['bootstrap']),
     async connectWallet () {
@@ -27,7 +24,6 @@ export default {
         alert('Use a web3 browser')
       }
       await window.ethereum.request({ method: 'eth_requestAccounts' })
-
       await this.bootstrap(window.web3)
     }
   }

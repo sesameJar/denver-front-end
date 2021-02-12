@@ -1,26 +1,39 @@
 <template>
-  <v-row class="pa-16">
-    <v-col cols="12" sm="6">
-      <v-row>
-        <v-col cols="12" sm=12 v-if="!isUploadedVideo" class="ChallengeCreation-video-upload-container">
-          <div>
-            <v-file-input
-              v-model="videoFile"
-              accept="video/*"
-              placeholder="Select A Video"
-              prepend-icon="mdi-video"
+  <div>
+    <v-snackbar
+      v-model="snackbar"
+      :timeout="2000"
+      color="rgb(0,255,055,0.8)"
+      dark
+      centered
+      rounded="pill"
+      top
+      multi-line
+    >
+      Please Connect Your Web3 Wallet First!
+    </v-snackbar>
+    <v-row class="pa-16">
+      <v-col cols="12" sm="6">
+        <v-row>
+          <v-col v-if="!isUploadedVideo" cols="12" sm="12" class="ChallengeCreation-video-upload-container">
+            <div>
+              <v-file-input
+                v-model="videoFile"
+                accept="video/*"
+                placeholder="Select A Video"
+                prepend-icon="mdi-video"
+              />
+            </div>
+          </v-col>
+          <v-col v-else>
+            <VideoPlayer
+              :key="video"
+              style="max-width:450px;max-height:450px;margin:0 auto"
+              :video-data="video"
             />
-          </div>
-        </v-col>
-        <v-col v-else>
-          <VideoPlayer
-            :key="video"
-            style="max-width:450px;max-height:450px;margin:0 auto"
-            :video-data="video"
-          />
-        </v-col>
-      </v-row>
-    </v-col>
+          </v-col>
+        </v-row>
+      </v-col>
       <v-col cols="12" sm="6" class="pt-0">
         <v-row>
           <v-col
@@ -38,7 +51,6 @@
             cols="12"
             sm="12"
           >
-
             <!-- TODO: fix this dropdown -->
             <v-select
               v-model="selectedCharity"
@@ -64,7 +76,6 @@
             />
           </v-col>
           <v-col cols="12" sm="12">
-
             <v-textarea
               v-model="challengeDescription"
               name="challenge-description"
@@ -77,28 +88,28 @@
               v-model="newInvitedAddress"
               label="Invite Others"
               append-icon="mdi-plus"
-              @click:append="addInvitedAddress"
               outlined
+              @click:append="addInvitedAddress"
             />
           </v-col>
-          <v-col cols="12" sm="12" class="invitees" v-if="invitedAddresses.length">
+          <v-col v-if="invitedAddresses.length" cols="12" sm="12" class="invitees">
             <v-chip
-              pill
               v-for="address in invitedAddresses"
               :key="address"
+              pill
               class="address_chip px-4"
             >
               <v-avatar left>
                 <v-img
                   :src="`https://avatars.onflow.org/avatar/${address
-                                .toString()
-                                .toLowerCase()}.svg`">
-                </v-img>
+                    .toString()
+                    .toLowerCase()}.svg`"
+                />
               </v-avatar>
               {{toShortAddress(address)}}
             </v-chip>
           </v-col>
-          <v-col cols="12" sm="12" >
+          <v-col cols="12" sm="12">
             <h4>Challenge End Date</h4>
           </v-col>
           <v-col cols="12" sm="12">
@@ -108,19 +119,19 @@
               elevation="15"
             />
           </v-col>
-
           <v-col cols="12" sm="12">
-            <v-btn @click="pushToIpfs" :disabled="!video">
-              Submit Challenge
+            <v-btn :disabled="!video" @click="pushToIpfs">
+              Start the Challenge!
             </v-btn>
           </v-col>
         </v-row>
       </v-col>
-  </v-row>
+    </v-row>
+  </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import VideoPlayer from '@/components/VideoPlayer'
 import ipfsClient from 'ipfs-http-client'
 import { CHARITY_LIST } from '@/utils/constants'
@@ -130,10 +141,10 @@ export default {
   name: 'Start',
   components: {
     VideoPlayer
-
   },
   data () {
     return {
+      snackbar: false,
       endDate: null,
       challengeName: '',
       challengeDescription: '',
@@ -147,6 +158,7 @@ export default {
     }
   },
   computed: {
+    ...mapState('web3', ['account']),
     minEntryFee () {
       return parseFloat(this.minEntryFeeInput).toFixed(3)
     },
@@ -175,6 +187,10 @@ export default {
   methods: {
     ...mapActions('web3', ['startChallenge']),
     async pushToIpfs () {
+      if (!this.account) {
+        this.snackbar = true
+        return
+      }
       const INFURA_DOMAIN = 'ipfs.infura.io'
       const INFURA_PORT = '5001'
       const infuraIpfsClient = ipfsClient({ host: INFURA_DOMAIN, port: INFURA_PORT, protocol: 'https' })
@@ -232,7 +248,6 @@ export default {
 </script>
 
 <style scoped>
-
 .ChallengeCreation-video-upload-container{
   border:2px dashed #888;
 
@@ -244,7 +259,6 @@ export default {
   padding:5px;
   cursor: pointer;
 }
-
 /deep/ .invitees .address_chip {
   height: 45px;
   margin-right: 5px;

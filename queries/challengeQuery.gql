@@ -7,7 +7,9 @@ query CHALLENGES_QUERY {
     title
     videos {
       id
-      creator
+      creator {
+        id
+      }
       challenge
       uploadTimestamp
     }
@@ -31,7 +33,9 @@ query CHALLENGE_BY_ID($id: String!){
     isActive
     videos(orderBy: uploadTimestamp, orderDirection : desc) {
       id
-      creator
+      creator {
+        id
+      }
       uploadTimestamp
     }
   }
