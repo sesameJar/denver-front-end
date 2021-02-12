@@ -15,7 +15,7 @@ export default {
     videoWithIpfsUrl () {
       if (this.videoData &&
        !this.videoData.includes('pfs.infura.io') &&
-       !this.videoData.includes('localhost')) {
+       !this.videoData.includes('blob:')) {
         return `https://ipfs.infura.io/ipfs/${this.videoData}`
       }
       return this.videoData
