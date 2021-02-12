@@ -1,7 +1,7 @@
 <template>
   <div>
     <VideoPlayer
-      :video-data="challenge.videos[0].id"
+      :video-data="challenge.videos.length && challenge.videos[0].id"
     />
     <h3> {{ challenge.title }} </h3>
     <div
