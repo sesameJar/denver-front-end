@@ -1,106 +1,172 @@
 <template>
-  <div class="font-weight-medium">
-      <!-- CHALLENGE FORM -->
-      <div class="challenge_container">
-        <h2 class="mb-3">Jump In Challenge {CHALLENGE_NAME}</h2>
-        <v-divider class="divider" vertical></v-divider>
-        <div class="challenge_info level">
-            <div class="level_item">
-              <div v-if="challengeCreator">
-                <p class="heading">Started By</p>
-                <Account :account="challengeCreator" />
-              </div>
 
-            </div>
-            <div class="level_item">
-              <div>
-                <p class="heading">Number of participants</p>
-                <p>{{numChallengers}}</p>
-              </div>
-            </div>
-            <div class="level_item">
-              <div>
-                <p class="heading">Entry Fee</p>
-                <p>{{minEntryFee}} Ξ</p>
-              </div>
-            </div>
-        </div>
-      </div>
-      <v-divider></v-divider>
-      <!-- JOIN FORM -->
-      <div class="join_form">
-
-        <v-file-input
-            v-model="videoFile"
-            accept="video/*"
-            class="file_input"
-          >
-          <div class="input_holder">
-
-        </div>
-        </v-file-input>
-        <v-btn @click="jumpInTheChallenge" :disabled="!videoFile">
-          JumpIn!
+  <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="600px"
+    >
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          color="primary"
+          dark
+          v-bind="attrs"
+          v-on="on"
+        >
+          Open Dialog
         </v-btn>
-      </div>
-      <v-divider></v-divider>
-      <!-- LATEST VIDEOS     -->
-      <div class="latest_videos" v-if="challengeById">
-        <h3>Latest video in this challenge</h3>
-      <v-row>
-        <v-col :key="vid.id" v-for="vid in challengeById.videos">
-          <v-card flat>
-            <VideoPlayer :key="vid.id" :video-data="vid.id" />
-          </v-card>
-        </v-col>
-      </v-row>
-      </div>
-  </div>
+      </template>
+      <v-card>
+        <v-card-title>
+          <span class="headline">Jump In Challenge <span style="text-decoration:underline">{{challengeByIdQuery && challengeByIdQuery.title}}</span></span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="12"
+                v-if="!isUploadedVideo"
+              >
+                <v-file-input
+                  v-model="videoFile"
+                  accept="video/*"
+                  class="file_input"
+                  placeholder="Choose a video"
+                >
+                </v-file-input>
+              </v-col>
+              <v-col
+                cols="12"
+                sm="12"
+                v-else
+              >
+
+                <VideoPlayer
+                  :key="video"
+                  style="max-height:450px;max-width:550px; margin:0 auto"
+                  :video-data="video"
+                />
+
+              </v-col>
+
+              <v-col cols="12">
+               <v-text-field
+                  v-if="!isPublic"
+                  v-model="newInvitedAddress"
+                  label="Invite Others"
+                  append-icon="mdi-plus"
+                  @click:append="addInvitedAddress"
+                />
+              </v-col>
+              <v-col cols="12" class="invitees" v-if="!isPublic && invitedAddresses.length">
+                <v-chip
+                  pill
+                  v-for="address in invitedAddresses"
+                  :key="address"
+                  class="address_chip px-4"
+                >
+                  <v-avatar left>
+                    <v-img
+                      :src="`https://avatars.onflow.org/avatar/${address
+                                    .toString()
+                                    .toLowerCase()}.svg`">
+                    </v-img>
+                  </v-avatar>
+                  {{toShortAddress(address)}}
+                </v-chip>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue-grey darken-4"
+            text
+            @click="dialog = false"
+          >
+            Close
+          </v-btn>
+          <v-btn
+            color="blue-grey darken-4 white--text"
+            flat
+            @click="dialog = false"
+          >
+            Save
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+  </v-dialog>
 
 </template>
 
 <script>
 import { mapActions } from 'vuex'
-import Account from '@/components/Account'
 import VideoPlayer from '@/components/VideoPlayer'
-import { CHALLENGE_BY_ID } from '@/queries/challengeById'
 import ipfsClient from 'ipfs-http-client'
 import { ethers } from 'ethers'
+import { object } from '~/services/infura'
 export default {
   name: 'Join-Challenge',
   components: {
-    Account,
     VideoPlayer
+  },
+  props: {
+    challengeByIdQuery: {
+      type: object,
+      default: null
+    }
   },
   data () {
     return {
       videoFile: null,
-      video: null
+      video: null,
+      isUploadedVideo: false,
+      invitedAddresses: [],
+      newInvitedAddress: null,
+      dialog: false
     }
   },
   computed: {
     minEntryFee () {
-      if (this.challengeById) {
-        return ethers.utils.formatEther(this.challengeById.minEntryFee)
+      if (this.challengeByIdQuery) {
+        return ethers.utils.formatEther(this.challengeByIdQuery.minEntryFee)
       }
-      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null
     },
     numChallengers () {
-      if (this.challengeById) {
-        return this.challengeById.numChallengers
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.numChallengers
       }
-      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null
     },
     challengeCreator () {
-      if (this.challengeById) {
-        return this.challengeById.creator
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.creator
       }
-      // return ethers.utils.parseEther(this.challengeById?.minEntryFee.toString())
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
       return null
+    },
+    isValidAddress () {
+      if (!this.newInvitedAddress) {
+        return false
+      }
+      try {
+        ethers.utils.getAddress(this.newInvitedAddress)
+        return true
+      } catch (e) {
+        return false
+      }
+    },
+    isPublic () {
+      if (this.challengeByIdQuery) {
+        return this.challengeByIdQuery.isPublic
+      }
+      // return ethers.utils.parseEther(this.challengeByIdQuery?.minEntryFee.toString())
+      return false
     }
-
   },
   watch: {
     videoFile () {
@@ -131,26 +197,35 @@ export default {
         const videoCID = await this.pinToIPFS()
         await this.jumpIn({
           challengeId: 1,
-          invitedAddresses: [],
+          invitedAddresses: this.invitedAddresses,
           ipfsHash: videoCID,
           donation: this.minEntryFee
         })
       } catch (e) {
         console.error('ERROR IN JOIN', e)
       }
-    }
-  },
-  apollo: {
-    challengeById: {
-      query: CHALLENGE_BY_ID,
-      variables () {
-        return {
-          id: this.$route.params.id
-        }
-      },
-      pollInterval: 5000
+    },
+    addInvitedAddress () {
+      if (this.isValidAddress && !this.invitedAddresses.includes(this.newInvitedAddress)) {
+        this.invitedAddresses.push(this.newInvitedAddress)
+        this.newInvitedAddress = ''
+      }
+    },
+    toShortAddress (val) {
+      return val && val.startsWith('0x') ? val.substr(0, 6) + '...' + val.substr(val.length - 6, val.length) : val
     }
   }
+  // apollo: {
+  //   challengeByIdQuery: {
+  //     query: CHALLENGE_BY_ID,
+  //     variables () {
+  //       return {
+  //         id: this.$route.params.id
+  //       }
+  //     },
+  //     pollInterval: 5000
+  //   }
+  // }
 }
 </script>
 
@@ -226,34 +301,18 @@ export default {
   display: block;
 }
 
+.invitees {
+  margin-bottom: 20px;
+}
+
+/deep/ .invitees .address_chip {
+  height: 45px;
+  margin-right: 5px;
+  border-radius: 100px;
+}
+
 .latest_videos h3 {
   margin: 40px 0;
 }
-
-.JoinChallenge-upload-video {
-  display: flex;
-  justify-content: center;
-}
-.JoinChallenge-video-upload-container{
-  border:1px solid black;
-  margin:5%;
-  padding:10%;
-}
-.JoinChallenge-dotted-camera-circle {
-    border: 1.5px dashed grey;
-    border-radius: 100%;
-    padding:5px;
-    cursor: pointer;
- }
-
- .JoinChallenge-center-row-items {
-   margin-left:35%;
-   margin-right:35%;
-   justify-content: center;
-   margin-top:3%;
- }
-.JoinChallenge-space-between-row-items {
-   margin-left:14%;
- }
 
 </style>
