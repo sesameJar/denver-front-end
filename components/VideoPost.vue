@@ -1,6 +1,6 @@
 <template>
   <div
-
+    v-if="video"
     class="VideoPost__container"
     max-width="280"
   >
@@ -18,15 +18,24 @@
       >
         <v-icon>mdi-thumb-up</v-icon> WOW
       </v-btn>
+      <VideoPlayer
+        :video-data="video.id"
+      />
     </div>
   </div>
 </template>
 <script>
 import Account from '@/components/Account'
+import VideoPlayer from '@/components/VideoPlayer'
 
 export default {
-  components: { Account },
+  components: { Account, VideoPlayer },
   props: {
+    challenge: {
+      type: Object,
+      default: null
+    },
+
     video: {
       type: Object,
       default: null

@@ -37,7 +37,7 @@
           cols="12"
           md="4"
         >
-          <ChallengeCard :chanlenge="challenge" />
+          <ChallengeCard :challenge="challenge" />
         </v-col>
       </v-row>
     </div>
@@ -48,8 +48,14 @@ import ChallengeCard from '@/components/ChallengeCard'
 // import VideoPost from '@/components/VideoPost'
 import { CONTRACT_QUERY } from '@/queries/contractQuery.gql'
 import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
+import { getServerTime } from '@/utils/helpers'
 export default {
   components: { ChallengeCard },
+  data () {
+    return {
+      pollingStarted: false
+    }
+  },
   computed: {
     numChallenges () {
       if (this.contractQuery) {
@@ -74,6 +80,19 @@ export default {
         return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numVideos
       }
       return null
+    }
+  },
+  mounted () {
+    // call once right away on mount
+    getServerTime()
+    window.setInterval(() => {
+      getServerTime()
+    }, 10000)
+    if (!this.pollingStarted) {
+      this.$apollo.queries.challengesQuery.startPolling(
+        15000
+      )
+      this.pollingStarted = true
     }
   },
   apollo: {
