@@ -11,10 +11,33 @@
       </div>
 
       <div class="Challenge__stats">
-        <span>total funds: {{ challengeByIdQuery.totalFund }} </span>
-        <span># submissions: {{ challengeByIdQuery.videos.length }} </span>
+        <span><strong>Total Funds:</strong> {{ challengeByIdQuery.totalFund }} </span>
         <br>
-        <span>Time Left</span>
+        <br>
+        <span><strong># Submissions:</strong>{{ challengeByIdQuery.videos.length }} </span>
+        <br>
+        <br>
+        <span><strong>Time Left:</strong><circular-count-down-timer
+          :initial-value="timeRemaining"
+          :stroke-width="5"
+          :seconds-stroke-color="'darkblue'"
+          :minutes-stroke-color="'darkblue'"
+          :hours-stroke-color="'darkblue'"
+          :underneath-stroke-color="'lightgrey'"
+          :seconds-fill-color="'#efecec'"
+          :minutes-fill-color="'#efecec'"
+          :hours-fill-color="'#efecec'"
+          :size="150"
+          :padding="4"
+          :hour-label="'hours'"
+          :minute-label="'minutes'"
+          :second-label="'seconds'"
+          :show-second="true"
+          :show-minute="true"
+          :show-hour="true"
+          style="text-align:center; color:black"
+        /></span>
+        <br>
         <br>
         <v-btn
 
@@ -56,6 +79,9 @@ import VideoPost from '@/components/VideoPost'
 import Account from '@/components/Account'
 import { getServerTime } from '@/utils/helpers'
 import { CHALLENGE_BY_ID } from '@/queries/challengeQuery.gql'
+import CircularCountDownTimer from 'vue-circular-count-down-timer'
+import Vue from 'vue'
+Vue.use(CircularCountDownTimer)
 export default {
   components: { VideoPost, Account },
   data: () => ({
@@ -67,6 +93,13 @@ export default {
     },
     challengeComplete () {
       return this.challengeByIdQuery.endTimestamp >= this.challengeByIdQuery.startTimestamp
+    },
+    timeRemaining () {
+      if (this.challengeByIdQuery.endTimestamp - this.challengeByIdQuery.startTimestamp < 0) {
+        return 0
+      } else {
+        return this.challengeByIdQuery.endTimestamp - this.challengeByIdQuery.startTimestamp
+      }
     }
   },
   mounted () {
