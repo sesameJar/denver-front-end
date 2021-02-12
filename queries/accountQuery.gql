@@ -1,11 +1,14 @@
 query ACCOUNT_BY_ID($id: String!) {
-  accountByIdQuery: accounts(id: $id) {
+  accountByIdQuery: account(id: $id) {
     id
     numChallenges
     challenges {
       id
       title
       description
+      videos {
+        id
+      }
     }
     totalFund
     wins

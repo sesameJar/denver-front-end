@@ -1,16 +1,16 @@
 <template>
-  <div>
+  <div v-if="accountByIdQuery">
     <div class="User__header">
-      <Account />
+      <Account :account="$route.params.id" /><br>
+      <p>{{ $route.params.id }}</p>
       <br><br>
-      <p class="User__description">
-        {{ description }}
-        I am MUMU the Challenger. I win and I win and I win. I love green. I love cactus. I love WIN.
+      <p v-if="accountByIdQuery" class="User__description">
+        {{ accountByIdQuery.description }}
       </p>
       <table>
         <tr>
-          <th>{{ accountByIdQuery && accountByIdQuery.totalFund }}</th>
-          <th>{{ numChallenges }}</th>
+          <th>{{ accountByIdQuery.totalFund }}</th>
+          <th>{{ accountByIdQuery.numChallenges }}</th>
         </tr>
         <tr>
           <td>Total Funds</td>
@@ -21,7 +21,7 @@
     <br><br><br>
     <div v-if="accountByIdQuery" class="User__video-cards">
       <v-row>
-        <v-col v-for="(challenge, index) in accountByIdQuery.challenges" :key="index" cols="12" md="4">
+        <v-col v-for="challenge in accountByIdQuery.challenges" :key="challenge.id" cols="12" md="4">
           <ChallengeCard :challenge="challenge" />
           <v-btn>
             <v-icon>mdi-thumb-up</v-icon> WOW
@@ -45,15 +45,24 @@ export default {
     }
   },
   // eslint-disable-next-line require-await
-  async asyncData ({ params }) {
-    const accountIdFromURL = params.id // When calling /abc the slug will be "abc"
-    return { accountIdFromURL }
-  },
+  // async asyncData ({ params }) {
+  //   const accountIdFromURL = params.id // When calling /abc the slug will be "abc"
+  //   return { accountIdFromURL }
+  // },
   data () {
     return {
       pollingStarted: false
     }
   },
+  // computed: {
+  //   account () {
+  //     if (this.accountByIdQuery && this.accountByIdQuery.length > 0) {
+  //       return this.accountByIdQuery
+  //     } else {
+  //       return null
+  //     }
+  //   }
+  // },
   mounted () {
     // call once right away on mount
     getServerTime()
@@ -72,14 +81,14 @@ export default {
       query: ACCOUNT_BY_ID,
       variables () {
         return {
-          id: this.accountIdFromURL
-        }
-      },
-      skip () {
-        return {
-          id: !this.accountIdFromURL
+          id: this.$route.params.id
         }
       }
+      // skip () {
+      //   return {
+      //     id: !this.$route.params.id
+      //   }
+      // }
     }
   }
 }

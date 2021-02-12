@@ -4,10 +4,12 @@
       <div class="Challenge__header">
         <div class="Challenge__header-left">
           <h2>Title</h2>
+
           <p>We Support: </p>
           <p>Started By: </p>
           <Account />
           <p>Description</p>
+          <p>{{ challenge.description }}</p>
         </div>
 
         <div class="Challenge__stats">
@@ -32,7 +34,7 @@
         :dense="$vuetify.breakpoint.smAndDown"
       >
         <v-timeline-item
-          v-for="(video, i) in challengeByIdQuery.videos"
+          v-for="(video, i) in challenge.videos"
           :key="i"
           fill-dot
         >
@@ -52,13 +54,22 @@ export default {
   components: { VideoPost, Account },
 
   // eslint-disable-next-line require-await
-  async asyncData ({ params }) {
-    const challengeIdFromURL = params.id // When calling /abc the slug will be "abc"
-    return { challengeIdFromURL }
-  },
+  // async asyncData ({ params }) {
+  //   const challengeIdFromURL = params.id // When calling /abc the slug will be "abc"
+  //   return { challengeIdFromURL }
+  // },
   data () {
     return {
       pollingStarted: false
+    }
+  },
+  computed: {
+    challenge () {
+      if (this.challengeQuery && this.challengeQuery.length > 0) {
+        return this.challengeQuery[0]
+      } else {
+        return null
+      }
     }
   },
   // data: () => ({
@@ -99,12 +110,12 @@ export default {
       query: CHALLENGE_BY_ID,
       variables () {
         return {
-          id: this.challengeIdFromURL
+          id: this.$route.params.id
         }
       },
       skip () {
         return {
-          id: !this.challengeIdFromURL
+          id: !this.$route.params.id
         }
       }
     }
