@@ -105,7 +105,6 @@ import { mapActions } from 'vuex'
 import VideoPlayer from '@/components/VideoPlayer'
 import ipfsClient from 'ipfs-http-client'
 import { ethers } from 'ethers'
-import { object } from '~/services/infura'
 export default {
   name: 'Join-Challenge',
   components: {
@@ -113,7 +112,7 @@ export default {
   },
   props: {
     challengeByIdQuery: {
-      type: object,
+      type: Object,
       default: null
     }
   },
