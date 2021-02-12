@@ -18,6 +18,7 @@
     "graphql-tag": "^2.11.0",
     "ipfs-http-client": "^49.0.2",
     "nuxt": "^2.14.12",
+    "vue-circular-count-down-timer": "^1.0.4",
     "vue-moment": "^4.1.0",
     "vuejs-datepicker": "^1.6.2",
     "vuetify": "^2.4.3"
