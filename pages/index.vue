@@ -37,7 +37,7 @@
           cols="12"
           md="4"
         >
-          <ChallengeCard :challenge="challenge" />
+          <ChallengeCard class="Home__ChallengeCard" :challenge="challenge" />
         </v-col>
       </v-row>
     </div>
@@ -45,7 +45,6 @@
 </template>
 <script>
 import ChallengeCard from '@/components/ChallengeCard'
-// import VideoPost from '@/components/VideoPost'
 import { CONTRACT_QUERY } from '@/queries/contractQuery.gql'
 import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
 import { getServerTime } from '@/utils/helpers'

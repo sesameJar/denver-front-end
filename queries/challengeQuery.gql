@@ -2,7 +2,9 @@ query CHALLENGES_QUERY {
   challengesQuery: challenges {
     id
     creator
+    startTimestamp
     endTimestamp
+    title
     videos {
       id
       creator {
@@ -19,6 +21,7 @@ query CHALLENGE_BY_ID($id: String!){
     id
     creator
     endTimestamp
+    startTimestamp
     title
     description
     beneficiary

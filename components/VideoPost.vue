@@ -50,9 +50,6 @@ export default {
       type: Object,
       default: null
     }
-  },
-
-  methods: {
   }
 }
 </script>
@@ -61,5 +58,4 @@ export default {
   display: flex;
   justify-content: space-evenly;
 }
-
 </style>
