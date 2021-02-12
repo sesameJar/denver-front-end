@@ -26,6 +26,7 @@
             </div>
         </div>
       </div>
+      <v-divider></v-divider>
       <!-- JOIN FORM -->
       <div class="join_form">
 
@@ -36,8 +37,9 @@
           >
           <div class="input_holder">
 
-        </div></v-file-input>
-        <v-btn>
+        </div>
+        </v-file-input>
+        <v-btn @click="jumpInTheChallenge" :disabled="!videoFile">
           JumpIn!
         </v-btn>
       </div>
@@ -70,6 +72,9 @@
 <script>
 import { mapActions } from 'vuex'
 import Account from '@/components/Account'
+// import VideoPlayer from '@/components/VideoPlayer'
+import { CHALLENGE_BY_ID } from '@/queries/challengeById'
+import ipfsClient from 'ipfs-http-client'
 export default {
   name: 'Join-Challenge',
   components: {
@@ -77,7 +82,8 @@ export default {
   },
   data () {
     return {
-      videoFile: null
+      videoFile: null,
+      video: null
     }
   },
   watch: {
@@ -89,18 +95,42 @@ export default {
   methods: {
     ...mapActions('web3', ['jumpIn']),
     async pinToIPFS () {
+      const INFURA_DOMAIN = 'ipfs.infura.io'
+      const INFURA_PORT = '5001'
+      const infuraIpfsClient = ipfsClient({ host: INFURA_DOMAIN, port: INFURA_PORT, protocol: 'https' })
+      try {
+        const video = {
+          content: this.videoFile,
+          pin: true
+        }
+        const uploadedFile = await infuraIpfsClient.add(video)
 
+        return uploadedFile.cid.toString()
+      } catch (e) {
+        console.error('Failed to save asset to IPFS', e)
+      }
     },
     async jumpInTheChallenge () {
       try {
+        const videoCID = await this.pinToIPFS()
         await this.jumpIn({
           challengeId: 1,
           invitedAddresses: [],
-          ipfsHash: 'QmQmNYYmc9yUJCR7pTb5zJtQ1mbjPe4jnZzGzimWmKiRCT',
+          ipfsHash: videoCID,
           donation: 0.1
         })
       } catch (e) {
         console.error('ERROR IN JOIN', e)
+      }
+    }
+  },
+  apollo: {
+    challengeById: {
+      query: CHALLENGE_BY_ID,
+      variables () {
+        return {
+          id: this.$route.params.id
+        }
       }
     }
   }
