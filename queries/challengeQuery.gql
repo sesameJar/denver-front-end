@@ -1,0 +1,59 @@
+query CHALLENGES_QUERY {
+  challengesQuery: challenges {
+    id
+    creator
+    endTimestamp
+    videos {
+      id
+      creator
+      challenge
+      uploadTimestamp
+    }
+  }
+}
+
+
+
+query SINGLE_CHALLENGE_QUERY($id: String!){
+  challengeQuery: challenges (where: {id: $id}) {
+    id
+    creator
+    endTimestamp
+    title
+    description
+    beneficiary
+    minEntryFee
+    numChallengers
+    totalFund
+    winner
+    isActive
+    videos {
+      id
+      creator
+      uploadTimestamp
+    }
+
+  }
+}
+
+
+query CHALLENGE_BY_ID($id: String!) {
+  challengeByIdQuery: challenges(id: $id) {
+    id
+    creator
+    endTimestamp
+    videos {
+      id
+      creator
+      challenge
+      uploadTimestamp
+    }
+  }
+}
+
+# query gallery($id: String!) {
+#     gallery(id: $id) {
+#       id
+#       artists
+#     }
+#   }

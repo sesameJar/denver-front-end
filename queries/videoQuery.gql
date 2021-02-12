@@ -1,0 +1,9 @@
+query videosQuery {
+  videosQuery: videos {
+    id
+    creator
+    challenge
+    uploadTxnHash
+    uploadTimestamp
+  }
+}

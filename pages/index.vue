@@ -1,77 +1,126 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
-      <h1 class="title">
-        StarRelay
-      </h1>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--green"
-        >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="button--grey"
-        >
-          GitHub
-        </a>
-        <v-btn block>
-          Block Button
-        </v-btn>
+    <div class="Home_header">
+      <div class="Home_header-container">
+        <table>
+          <tr>
+            <th>
+              {{ numChallenges }}
+            </th>
+            <th v-if="contractQuery">
+              {{ totalFund }}
+            </th>
+            <th v-if="contractQuery">
+              {{ numChallengers }}
+            </th>
+            <th v-if="contractQuery">
+              {{ numVideos }}
+            </th>
+          </tr>
+          <tr>
+            <td>Open Challenges</td>
+            <td>Total Funds</td>
+            <td> # Challengers</td>
+            <td> # Videos</td>
+          </tr>
+        </table>
+        <!-- <div>{{ contractQuery.length }}</div> -->
       </div>
+      <span>BRING IT ON</span>
+    </div>
+    <br><br><br>
+    <div class="Home__browse">
+      <v-row>
+        <v-col
+          v-for="challenge in challengesQuery"
+          :key="challenge.id"
+          cols="12"
+          md="4"
+        >
+          <ChallengeCard :challenge="challenge" />
+        </v-col>
+      </v-row>
     </div>
   </div>
 </template>
-
 <script>
-
-export default {}
+import ChallengeCard from '@/components/ChallengeCard'
+// import VideoPost from '@/components/VideoPost'
+import { CONTRACT_QUERY } from '@/queries/contractQuery.gql'
+import { CHALLENGES_QUERY } from '@/queries/challengeQuery.gql'
+import { getServerTime } from '@/utils/helpers'
+export default {
+  components: { ChallengeCard },
+  data () {
+    return {
+      pollingStarted: false
+    }
+  },
+  computed: {
+    numChallenges () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numChallenges
+      }
+      return null
+    },
+    totalFund () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].totalFund
+      }
+      return null
+    },
+    numChallengers () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numChallengers
+      }
+      return null
+    },
+    numVideos () {
+      if (this.contractQuery) {
+        return this.contractQuery.length === 0 ? 0 : this.contractQuery[0].numVideos
+      }
+      return null
+    }
+  },
+  mounted () {
+    // call once right away on mount
+    getServerTime()
+    window.setInterval(() => {
+      getServerTime()
+    }, 10000)
+    if (!this.pollingStarted) {
+      this.$apollo.queries.challengesQuery.startPolling(
+        15000
+      )
+      this.pollingStarted = true
+    }
+  },
+  apollo: {
+    challengesQuery: {
+      query: CHALLENGES_QUERY
+    },
+    contractQuery: {
+      query: CONTRACT_QUERY
+    }
+  }
+}
 </script>
 
 <style>
-.container {
-  margin: 0 auto;
-  min-height: 100vh;
+.Home_header {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  flex-direction: row;
+  justify-content: space-between;
+}
+th, td {
+  padding: 15px;
+}
+.Home_header span {
+  font-size: 50px;
+  font-weight: 500;
 }
 
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.Home_header-container span {
+  padding: 20px;
 }
 </style>
